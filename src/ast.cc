@@ -14,11 +14,11 @@ namespace ast {
 void AST::Format(FILE *dst) {
   if(!Valid()) return;
   if (root_ != nullptr) {
-    libs_.Format(dst);
+    fprintf(dst, "#include <stdio.h>\n");
     root_->Format(dst);
   }
-  log_info("ast format success");
-  if(dst != stdout) fclose(dst);
+  // log_info("ast format success");
+  fclose(dst);
 }
 
 //////////////////////////////
