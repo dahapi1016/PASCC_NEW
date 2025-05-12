@@ -105,8 +105,8 @@ namespace pascals {
 
             // getter and setter
             const std::string id_ref() {
-                return is_ref_ ? "(*" + value_.get<std::string>() + ")"
-                    : value_.get<std::string>();
+                return is_ref_ ? "(*" + value_.get_value<std::string>() + ")"
+                    : value_.get_value<std::string>();
             }
             void set_value(ConstValue value) { value_ = value; }
             void set_ref(bool ref) { is_ref_ = ref; }
