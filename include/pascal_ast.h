@@ -53,12 +53,12 @@ namespace pascals {
             
          
             //格式化输出某子节点及其后续节点
-            void FormatFrom(int pos, std::unique_ptr<FILE> dst) {
+            void FormatFrom(int pos, FILE * dst) {
                 return child_list_[pos < 0 ? pos + child_list_.size() : pos]->Format(dst);
             }
 
             //递归输出所有子节点
-            virtual void Format(std::unique_ptr<FILE>& dst) {
+            virtual void Format(FILE * dst) {
                 for (auto& child : child_list_) {
                     child->Format(dst);
                 }
@@ -85,9 +85,7 @@ namespace pascals {
             Node* root() { return root_; }
             void set_root(Node* root) { root_ = root; }
             // static formater
-            void Format(std::unique_ptr<FILE>& dst);
-
-
+            void Format(FILE * dst);
         };
 
         /* **************** inherit class **************** */
@@ -118,9 +116,9 @@ namespace pascals {
             std::shared_ptr<BasicType> type() { return value_.get_type(); }
 
             // Analyze reference
-            bool AnalyzeReference(TableSet* ts, FunctionSymbol* fn);
+            bool AnalyzeReference(SymbolTable* ts, FunctionIdentifier* fn);
             // override formater
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
             // is referenced
         };
@@ -133,7 +131,7 @@ namespace pascals {
             // programhead → program_id (idlists)
             // programhead → program_id
         public:
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
         };
 
         class ProgramBodyNode : public Node {
@@ -143,7 +141,7 @@ namespace pascals {
             //                subprogram_declarations
             //                compound_statement
         public:
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
         };
 
         class IdListNode : public Node {
@@ -153,7 +151,7 @@ namespace pascals {
                 MULTIPLE_ID  // idlists → idlist,id
             };
             IdListNode(GrammarType gt) : grammar_type_(gt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             std::vector<LeafNode*> Lists();
 
         private:
@@ -175,8 +173,8 @@ namespace pascals {
             };
             ConstDeclarationNode(GrammarType gt, BasicType* bt)
                 : grammar_type_(gt), type_(bt) {}
-            void print_type(std::unique_ptr<FILE>& dst);
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void print_type(FILE * dst);
+            void Format(FILE * dst) override;
 
         private:
             GrammarType grammar_type_;
@@ -201,7 +199,7 @@ namespace pascals {
             enum class ListType { TYPE, ID };
             VarDeclarationNode(GrammarType gt, ListType lt)
                 : grammar_type_(gt), list_type_(lt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             GrammarType grammar_type_;
@@ -220,7 +218,7 @@ namespace pascals {
             TypeNode* base_type() { return base_type_node_; }
 
             void PeriodsFormat(FILE* dst);
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             GrammarType grammar_type_;
@@ -239,7 +237,7 @@ namespace pascals {
             }
             void set_type(BasicType* type) { type_ = type; }
             BasicType* type() { return type_; }
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             BasicType* type_;
@@ -253,7 +251,7 @@ namespace pascals {
         class PeriodNode : public Node {
             // Period → const_var ... const var
         public:
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             int len() { return len_; }
             void set_len(int len) { len_ = len; }
 
@@ -269,7 +267,7 @@ namespace pascals {
         class SubprogramNode : public Node {
             // subprogram -> subprogram_head ; subprogram_body
         public:
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
         };
 
         class SubprogramBodyNode : public Node {
@@ -287,7 +285,7 @@ namespace pascals {
             };
 
             SubprogramHeadNode(GrammarType gt) : grammar_type_(gt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             GrammarType grammar_type() { return grammar_type_; }
             void set_id(std::string id) { id_ = id; }
             std::string id() { return id_; }
@@ -302,7 +300,7 @@ namespace pascals {
         public:
             // formal_parameter → EPSILON
             //                  | ( parameter_lists )
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
         };
 
         class ParameterListsNode : public Node {
@@ -313,7 +311,7 @@ namespace pascals {
             };
 
             ParameterListsNode(GrammarType gt) : grammar_type_(gt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             GrammarType grammar_type_;
@@ -326,13 +324,13 @@ namespace pascals {
         class VarParameterNode : public Node {
             // var_param → var value_param
         public:
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
         };
 
         class ValueParameterNode : public Node {
             // ValueParam → idlist : basic_type
         public:
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             void Format(bool ref, FILE* dst);
         };
 
@@ -360,7 +358,7 @@ namespace pascals {
             };
 
             StatementNode(GrammarType gt) : grammar_type_(gt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             GrammarType grammar_type_;
@@ -375,7 +373,7 @@ namespace pascals {
 
             VariableListNode(GrammarType gt) : grammar_type_(gt) {}
             std::string FormatString();
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             void Format(bool ref, FILE* dst);
             bool set_types(std::vector<TypeTemplate*>* type_list);
 
@@ -399,7 +397,7 @@ namespace pascals {
 
             IDVarPartNode(GrammarType gt) : grammar_type_(gt) {}
             GrammarType grammar_type() { return grammar_type_; }
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             void set_array_lb(int lb) { array_lb_ = lb; }
 
         private:
@@ -415,7 +413,7 @@ namespace pascals {
             };
 
             ProcedureCallNode(GrammarType gt) : grammar_type_(gt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             GrammarType grammar_type_;
@@ -429,7 +427,7 @@ namespace pascals {
             };
 
             ElsePartNode(GrammarType gt) : grammar_type_(gt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             StatementNode* GetStatement() {
                 return child_list_[0]->DynamicCast<StatementNode>();
             }
@@ -447,7 +445,7 @@ namespace pascals {
 
             ExpressionListNode(GrammarType gt) : grammar_type_(gt) {}
             std::string FormatString();
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
             bool set_types(std::vector<TypeTemplate*>* type_list);
             void set_ref(std::stack<bool>* ref);
 
@@ -470,7 +468,7 @@ namespace pascals {
             void set_is_ref() { is_ref_ = 1; }
             void set_expression_type(TargetType tg) { target_type_ = tg; }
             TargetType target_type() { return target_type_; }
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             TargetType target_type_;
@@ -485,7 +483,7 @@ namespace pascals {
         public:
             // term → factor | term mulop factor
             void set_op_div(bool op) { op_div = op; }
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             bool op_div = false;
@@ -503,7 +501,7 @@ namespace pascals {
             };
 
             FactorNode(GrammarType gt) : grammar_type_(gt) {}
-            void Format(std::unique_ptr<FILE>& dst) override;
+            void Format(FILE * dst) override;
 
         private:
             GrammarType grammar_type_;
