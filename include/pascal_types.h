@@ -1,4 +1,4 @@
-// ÀàĞÍ¶¨Òå
+// ç±»å‹å®šä¹‰
 #pragma once
 
 #include <iostream>
@@ -11,69 +11,69 @@
 
 namespace pascals {
 
-	class TypeTemplate {  // ÀàĞÍÄ£°å(»ùÀà)
+	class TypeTemplate {  // ç±»å‹æ¨¡æ¿(åŸºç±»)
 	public:
-		enum class TYPE { BASIC, ARRAY };  // »ù´¡ÀàĞÍ¡¢Êı×éÀàĞÍ
-		TypeTemplate();  // ÎŞ²Î¹¹Ôì
-		TypeTemplate(TYPE type);  // ´ø²Î¹¹Ôì
-		virtual ~TypeTemplate();  // Îö¹¹º¯Êı
-		TYPE get_type();  // »ñÈ¡ÀàĞÍ
-		virtual std::string get_pascal_name() = 0;  // »ñÈ¡¶ÔÓ¦µÄPascal·ç¸ñÊı¾İÀàĞÍÃû³Æ
-		bool is_basic_type(std::shared_ptr<TypeTemplate> type);  // ÅĞtÊÇ·ñÎª»ù´¡ÀàĞÍ
-		bool is_same(std::shared_ptr<TypeTemplate> type1, std::shared_ptr<TypeTemplate> type2);  // ÅĞÁ½¸öÀàĞÍÊÇ·ñÏàÍ¬
+		enum class TYPE { BASIC, ARRAY };  // åŸºç¡€ç±»å‹ã€æ•°ç»„ç±»å‹
+		TypeTemplate();  // æ— å‚æ„é€ 
+		TypeTemplate(TYPE type);  // å¸¦å‚æ„é€ 
+		virtual ~TypeTemplate();  // ææ„å‡½æ•°
+		TYPE get_type();  // è·å–ç±»å‹
+		virtual std::string get_pascal_name() = 0;  // è·å–å¯¹åº”çš„Pascalé£æ ¼æ•°æ®ç±»å‹åç§°
+		bool is_basic_type(std::shared_ptr<TypeTemplate> type);  // åˆ¤tæ˜¯å¦ä¸ºåŸºç¡€ç±»å‹
+		bool is_same(std::shared_ptr<TypeTemplate> type1, std::shared_ptr<TypeTemplate> type2);  // åˆ¤ä¸¤ä¸ªç±»å‹æ˜¯å¦ç›¸åŒ
 	protected:
-		TYPE m_type;  // ÀàĞÍ
+		TYPE m_type;  // ç±»å‹
 	};
 
-	class BasicType : public TypeTemplate, public std::enable_shared_from_this<BasicType> {  // ¼Ì³Ğ×ÔTypeTemplate£¬±íÊ¾»ù´¡ÀàĞÍ
+	class BasicType : public TypeTemplate, public std::enable_shared_from_this<BasicType> {  // ç»§æ‰¿è‡ªTypeTemplateï¼Œè¡¨ç¤ºåŸºç¡€ç±»å‹
 	public:
-		enum class BASIC_TYPE { INTEGER, REAL, BOOLEAN, CHAR, STRING, NONE };  // NONE±íÊ¾ÎŞÀàĞÍ»òÎ´³õÊ¼»¯ÀàĞÍ
-		BasicType();  // ÎŞ²Î¹¹Ôì
-		BasicType(BASIC_TYPE basic_type);  // ´ø²Î¹¹Ôì
-		~BasicType();  // Îö¹¹º¯Êı
-		BASIC_TYPE get_basic_type();  // »ñÈ¡»ù´¡ÀàĞÍ
-		std::string get_pascal_name() override;  // »ñÈ¡¶ÔÓ¦µÄPascal·ç¸ñÊı¾İÀàĞÍÃû³Æ
-		std::string get_c_name();  // »ñÈ¡¶ÔÓ¦µÄc·ç¸ñÊı¾İÀàĞÍÃû³Æ
-		std::shared_ptr<BasicType> get_computed_type(std::shared_ptr<BasicType> type1, std::shared_ptr<BasicType> type2, std::string op);  // Á½ÖÖÀàĞÍ½øĞĞop²Ù×÷ºóµÄ½á¹ûÀàĞÍ
-		std::shared_ptr<BasicType> get_computed_type(std::shared_ptr<BasicType> t1, std::string op);  // Ò»ÖÖÀàĞÍ½øĞĞop²Ù×÷ºóµÄ½á¹ûÀàĞÍ
+		enum class BASIC_TYPE { INTEGER, REAL, BOOLEAN, CHAR, STRING, NONE };  // NONEè¡¨ç¤ºæ— ç±»å‹æˆ–æœªåˆå§‹åŒ–ç±»å‹
+		BasicType();  // æ— å‚æ„é€ 
+		BasicType(BASIC_TYPE basic_type);  // å¸¦å‚æ„é€ 
+		~BasicType();  // ææ„å‡½æ•°
+		BASIC_TYPE get_basic_type();  // è·å–åŸºç¡€ç±»å‹
+		std::string get_pascal_name() override;  // è·å–å¯¹åº”çš„Pascalé£æ ¼æ•°æ®ç±»å‹åç§°
+		std::string get_c_name();  // è·å–å¯¹åº”çš„cé£æ ¼æ•°æ®ç±»å‹åç§°
+		std::shared_ptr<BasicType> get_computed_type(std::shared_ptr<BasicType> type1, std::shared_ptr<BasicType> type2, std::string op);  // ä¸¤ç§ç±»å‹è¿›è¡Œopæ“ä½œåçš„ç»“æœç±»å‹
+		std::shared_ptr<BasicType> get_computed_type(std::shared_ptr<BasicType> t1, std::string op);  // ä¸€ç§ç±»å‹è¿›è¡Œopæ“ä½œåçš„ç»“æœç±»å‹
 	private:
-		BASIC_TYPE m_basic_type;  // »ù´¡ÀàĞÍ
+		BASIC_TYPE m_basic_type;  // åŸºç¡€ç±»å‹
 	};
 
-	class ArrayType : public TypeTemplate, public std::enable_shared_from_this<ArrayType> {  // ¼Ì³Ğ×ÔTypeTemplate£¬±íÊ¾Êı×éÀàĞÍ
+	class ArrayType : public TypeTemplate, public std::enable_shared_from_this<ArrayType> {  // ç»§æ‰¿è‡ªTypeTemplateï¼Œè¡¨ç¤ºæ•°ç»„ç±»å‹
 	public:
-		struct ArrayBound {  // Ò»Î¬Êı×éÉÏÏÂ½ç
-			int lower_bound;  // Êı×éÏÂ½ç
-			int upper_bound;  // Êı×éÉÏ½ç
-			ArrayBound();  // ÎŞ²Î¹¹Ôì
-			ArrayBound(const ArrayBound& other) = default;  // Ç³¿½±´¹¹Ôì
-			ArrayBound& operator=(const ArrayBound& other);  // ¸³ÖµÂß¼­
-			bool operator==(const ArrayBound& other) const;  // ÅĞµÈÂß¼­
+		struct ArrayBound {  // ä¸€ç»´æ•°ç»„ä¸Šä¸‹ç•Œ
+			int lower_bound;  // æ•°ç»„ä¸‹ç•Œ
+			int upper_bound;  // æ•°ç»„ä¸Šç•Œ
+			ArrayBound();  // æ— å‚æ„é€ 
+			ArrayBound(const ArrayBound& other) = default;  // æµ…æ‹·è´æ„é€ 
+			ArrayBound& operator=(const ArrayBound& other);  // èµ‹å€¼é€»è¾‘
+			bool operator==(const ArrayBound& other) const;  // åˆ¤ç­‰é€»è¾‘
 		};
-		ArrayType();  // ÎŞ²Î¹¹Ôì
-		ArrayType(std::shared_ptr<BasicType> element_type);  // Ò»¸ö²ÎÊı(ÔªËØÀàĞÍ)¹¹Ôì
-		ArrayType(std::shared_ptr<BasicType> element_type, std::vector<ArrayBound> bounds);  // Á½¸ö²ÎÊı(ÔªËØÀàĞÍ¡¢Êı×éÉÏÏÂ½ç)¹¹Ôì
-		ArrayType(const ArrayType& other);  // Éî¿½±´¹¹Ôì
-		~ArrayType();  // Îö¹¹º¯Êı
-		ArrayType& operator=(const ArrayType& other);  // ¸³ÖµÂß¼­
-		bool operator==(const ArrayType& other) const;  // ÅĞµÈÂß¼­
-		std::string get_pascal_name() override;  // »ñÈ¡¶ÔÓ¦µÄPascal·ç¸ñÊı¾İÀàĞÍÃû³Æ
-		std::shared_ptr<BasicType> get_element_type();  // »ñÈ¡Êı×éÔªËØÀàĞÍ
-		size_t get_dimention();  // »ñÈ¡Êı×éÎ¬¶È
-		std::vector<ArrayBound>& get_bounds();  // »ñÈ¡Êı×éÏÂ±ê·¶Î§ÃÇ
-		ArrayBound get_certain_bound(size_t i);  // »ñÈ¡Êı×éÖ¸¶¨Î¬¶ÈµÄÏÂ±ê·¶Î§(´Ó0¿ªÊ¼)
-		bool is_valid();  // ÊÇ·ñÓĞ´í
+		ArrayType();  // æ— å‚æ„é€ 
+		ArrayType(std::shared_ptr<BasicType> element_type);  // ä¸€ä¸ªå‚æ•°(å…ƒç´ ç±»å‹)æ„é€ 
+		ArrayType(std::shared_ptr<BasicType> element_type, std::vector<ArrayBound> bounds);  // ä¸¤ä¸ªå‚æ•°(å…ƒç´ ç±»å‹ã€æ•°ç»„ä¸Šä¸‹ç•Œ)æ„é€ 
+		ArrayType(const ArrayType& other);  // æ·±æ‹·è´æ„é€ 
+		~ArrayType();  // ææ„å‡½æ•°
+		ArrayType& operator=(const ArrayType& other);  // èµ‹å€¼é€»è¾‘
+		bool operator==(const ArrayType& other) const;  // åˆ¤ç­‰é€»è¾‘
+		std::string get_pascal_name() override;  // è·å–å¯¹åº”çš„Pascalé£æ ¼æ•°æ®ç±»å‹åç§°
+		std::shared_ptr<BasicType> get_element_type();  // è·å–æ•°ç»„å…ƒç´ ç±»å‹
+		size_t get_dimention();  // è·å–æ•°ç»„ç»´åº¦
+		std::vector<ArrayBound>& get_bounds();  // è·å–æ•°ç»„ä¸‹æ ‡èŒƒå›´ä»¬
+		ArrayBound get_certain_bound(size_t i);  // è·å–æ•°ç»„æŒ‡å®šç»´åº¦çš„ä¸‹æ ‡èŒƒå›´(ä»0å¼€å§‹)
+		bool is_valid();  // æ˜¯å¦æœ‰é”™
 
-		// ÏÂÃæµÄÃ»¶®
+		// ä¸‹é¢çš„æ²¡æ‡‚
 		// visitor by layer or by types
 		ArrayType Visit(std::vector<TypeTemplate*> v_types);  // visit array
 		ArrayType Visit(unsigned int v_layer);                 // visit array
 	private:
-		std::shared_ptr<BasicType> m_element_type;  // ÔªËØÀàĞÍ
-		std::vector<ArrayBound> m_bounds;  // Êı×é¸÷Î¬ÊıÉÏÏÂ½ç(¶àÎ¬)
+		std::shared_ptr<BasicType> m_element_type;  // å…ƒç´ ç±»å‹
+		std::vector<ArrayBound> m_bounds;  // æ•°ç»„å„ç»´æ•°ä¸Šä¸‹ç•Œ(å¤šç»´)
 	};
 
-	// È«¾Ö±äÁ¿
+	// å…¨å±€å˜é‡
 	extern std::shared_ptr<BasicType> TYPE_INTEGER;
 	extern std::shared_ptr<BasicType> TYPE_REAL;
 	extern std::shared_ptr<BasicType> TYPE_BOOLEAN;
@@ -81,7 +81,7 @@ namespace pascals {
 	extern std::shared_ptr<BasicType> TYPE_STRING;
 	extern std::shared_ptr<BasicType> TYPE_NONE;
 
-	class ConstValue {  // ³£Á¿
+	class ConstValue {  // å¸¸é‡
 	public:
 		ConstValue();
 		ConstValue(const ConstValue& other);
@@ -89,64 +89,64 @@ namespace pascals {
 			set_type_and_value(v);
 		}
 		~ConstValue();
-		ConstValue& operator=(const ConstValue& other);  // ¸³Öµ²Ù×÷
-		ConstValue operator+(const ConstValue& other);  // µ±Ç°¶ÔÏóÓëconst_value×÷¼Ó·¨²Ù×÷
-		ConstValue operator-(const ConstValue& other);  // µ±Ç°¶ÔÏóÓëconst_value×÷¼õ·¨²Ù×÷
-		ConstValue operator*(const ConstValue& other);  // µ±Ç°¶ÔÏóÓëconst_value×÷³Ë·¨²Ù×÷
-		ConstValue operator/(const ConstValue& other);  // µ±Ç°¶ÔÏóÓëconst_value×÷³ı·¨²Ù×÷
-		template <typename T> void set_type_and_value(T v) {  // ÉèÖÃ³£Á¿ÀàĞÍ&Öµ
-			if constexpr (std::is_same_v<T, int>) {  // Èç¹ûsetµÄÖµÊÇintÀàĞÍ
+		ConstValue& operator=(const ConstValue& other);  // èµ‹å€¼æ“ä½œ
+		ConstValue operator+(const ConstValue& other);  // å½“å‰å¯¹è±¡ä¸const_valueä½œåŠ æ³•æ“ä½œ
+		ConstValue operator-(const ConstValue& other);  // å½“å‰å¯¹è±¡ä¸const_valueä½œå‡æ³•æ“ä½œ
+		ConstValue operator*(const ConstValue& other);  // å½“å‰å¯¹è±¡ä¸const_valueä½œä¹˜æ³•æ“ä½œ
+		ConstValue operator/(const ConstValue& other);  // å½“å‰å¯¹è±¡ä¸const_valueä½œé™¤æ³•æ“ä½œ
+		template <typename T> void set_type_and_value(T v) {  // è®¾ç½®å¸¸é‡ç±»å‹&å€¼
+			if constexpr (std::is_same_v<T, int>) {  // å¦‚æœsetçš„å€¼æ˜¯intç±»å‹
 				m_const_type = TYPE_INTEGER;
 			}
-			else if constexpr (std::is_same_v<T, float>) {  // Èç¹ûsetµÄÖµÊÇfloatÀàĞÍ
+			else if constexpr (std::is_same_v<T, float>) {  // å¦‚æœsetçš„å€¼æ˜¯floatç±»å‹
 				m_const_type = TYPE_REAL;
 			}
-			else if constexpr (std::is_same_v<T, bool>) {  // Èç¹ûsetµÄÖµÊÇboolÀàĞÍ
+			else if constexpr (std::is_same_v<T, bool>) {  // å¦‚æœsetçš„å€¼æ˜¯boolç±»å‹
 				m_const_type = TYPE_BOOLEAN;
 			}
-			else if constexpr (std::is_same_v<T, char>) {  // Èç¹ûsetµÄÖµÊÇcharÀàĞÍ
+			else if constexpr (std::is_same_v<T, char>) {  // å¦‚æœsetçš„å€¼æ˜¯charç±»å‹
 				m_const_type = TYPE_CHAR;
 			}
-			else if constexpr (std::is_same_v<T, std::string>) {  // Èç¹ûsetµÄÖµÊÇstringÀàĞÍ
+			else if constexpr (std::is_same_v<T, std::string>) {  // å¦‚æœsetçš„å€¼æ˜¯stringç±»å‹
 				m_const_type = TYPE_STRING;
 			}
 			m_const_value = v;
 		}
-		void negate_value();  // ¶Ô³£Á¿ÖµÈ¡·´
-		std::shared_ptr<BasicType> get_type();  // »ñÈ¡³£Á¿¶ÔÓ¦µÄÀàĞÍ
-		template <typename T> T get_value() {  // »ñÈ¡³£Á¿¶ÔÓ¦µÄÖµ
+		void negate_value();  // å¯¹å¸¸é‡å€¼å–å
+		std::shared_ptr<BasicType> get_type();  // è·å–å¸¸é‡å¯¹åº”çš„ç±»å‹
+		template <typename T> T get_value() {  // è·å–å¸¸é‡å¯¹åº”çš„å€¼
 			if constexpr (std::is_same_v<T, int>) {
-				return std::get<int>(m_const_value);  // ÌáÈ¡intÀàĞÍµÄÖµ
+				return std::get<int>(m_const_value);  // æå–intç±»å‹çš„å€¼
 			}
 			else if constexpr (std::is_same_v<T, char>) {
-				return std::get<char>(m_const_value);  // ÌáÈ¡charÀàĞÍµÄÖµ
+				return std::get<char>(m_const_value);  // æå–charç±»å‹çš„å€¼
 			}
 			else if constexpr (std::is_same_v<T, float>) {
-				return std::get<float>(m_const_value);  // ÌáÈ¡floatÀàĞÍµÄÖµ
+				return std::get<float>(m_const_value);  // æå–floatç±»å‹çš„å€¼
 			}
 			else if constexpr (std::is_same_v<T, bool>) {
-				return std::get<bool>(m_const_value);  // ÌáÈ¡boolÀàĞÍµÄÖµ
+				return std::get<bool>(m_const_value);  // æå–boolç±»å‹çš„å€¼
 			}
 			else if constexpr (std::is_same_v<T, std::string>) {
-				return std::get<std::string>(m_const_value);  // ÌáÈ¡std::stringÀàĞÍµÄÖµ
+				return std::get<std::string>(m_const_value);  // æå–std::stringç±»å‹çš„å€¼
 			}
 		}
 	private:
-		std::shared_ptr<BasicType> m_const_type = nullptr;  // ³£Á¿ÀàĞÍ
-		std::variant<int, float, bool, char, std::string> m_const_value;  // ³£Á¿Öµ
+		std::shared_ptr<BasicType> m_const_type = nullptr;  // å¸¸é‡ç±»å‹
+		std::variant<int, float, bool, char, std::string> m_const_value;  // å¸¸é‡å€¼
 	};
 
-	class Operation {  // ÔËËãÀà
+	class Operation {  // è¿ç®—ç±»
 	public:
 		Operation(std::shared_ptr<BasicType> operand1_type, std::shared_ptr<BasicType> operand2_type, const std::string& op);
 		~Operation();
-		bool operator==(const Operation& other) const;  // ÅĞµÈ²Ù×÷
-		std::shared_ptr<BasicType> m_operand1_type;  // ²Ù×÷Êı1ÀàĞÍ
-		std::shared_ptr<BasicType> m_operand2_type;  // ²Ù×÷Êı2ÀàĞÍ(ÈôÎªÒ»ÔªÔËËã·ûÔòÎªnull)
-		std::string m_op;  // ÔËËã·û
+		bool operator==(const Operation& other) const;  // åˆ¤ç­‰æ“ä½œ
+		std::shared_ptr<BasicType> m_operand1_type;  // æ“ä½œæ•°1ç±»å‹
+		std::shared_ptr<BasicType> m_operand2_type;  // æ“ä½œæ•°2ç±»å‹(è‹¥ä¸ºä¸€å…ƒè¿ç®—ç¬¦åˆ™ä¸ºnull)
+		std::string m_op;  // è¿ç®—ç¬¦
 	};
 
-	// Áô´ıĞŞ¸Ä
+	// ç•™å¾…ä¿®æ”¹
 	extern std::shared_ptr<std::vector<std::shared_ptr<TypeTemplate>>> g_ptr_collector;
 	static void collect_ptr(std::shared_ptr<TypeTemplate> ptr) {
 		if (ptr->get_type() == TypeTemplate::TYPE::BASIC)
@@ -154,7 +154,7 @@ namespace pascals {
 		g_ptr_collector->push_back(std::move(ptr));
 	}
 
-	struct OperationHash {  // ¹şÏ£º¯Êı
+	struct OperationHash {  // å“ˆå¸Œå‡½æ•°
 		std::size_t operator()(const Operation& k) const {
 			std::size_t seed = 0;
 			std::hash<std::shared_ptr<BasicType>> type_hash;
@@ -167,7 +167,7 @@ namespace pascals {
 			return seed;
 		}
 	};
-	extern std::unordered_map<Operation, std::shared_ptr<BasicType>, OperationHash> g_operation_map;  // ¼üÎªÔËËãÀà£¬ÖµÎªÔËËãºó½á¹ûÀàĞÍ
+	extern std::unordered_map<Operation, std::shared_ptr<BasicType>, OperationHash> g_operation_map;  // é”®ä¸ºè¿ç®—ç±»ï¼Œå€¼ä¸ºè¿ç®—åç»“æœç±»å‹
 
-	void pascal_types_init();  // È«¾Ö±äÁ¿³õÊ¼»¯
+	void pascal_types_init();  // å…¨å±€å˜é‡åˆå§‹åŒ–
 }

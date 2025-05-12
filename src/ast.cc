@@ -58,10 +58,10 @@ bool LeafNode::AnalyzeReference(TableSet *ts, FunctionSymbol *fn) {
 void ProgramHeadNode::Format(FILE *dst) {
   time_t now = time(nullptr);
   tm *local = localtime(&now);
-  PRINT("/// [")
+  // PRINT("/// [")
   FormatAt(0, dst);
-  PRINT("] created on %d/%d/%d\n", 1900 + local->tm_year, 1 + local->tm_mon,
-        local->tm_mday)
+  // PRINT("] created on %d/%d/%d\n", 1900 + local->tm_year, 1 + local->tm_mon,
+  //       local->tm_mday)
 }
 
 void ProgramBodyNode::Format(FILE *dst) {

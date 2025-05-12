@@ -1,43 +1,43 @@
-// ·ûºÅ±í¶¨Òå
+// ç¬¦å·è¡¨å®šä¹‰
 #pragma once
 #include "pascal_identifier.h"
 
 namespace pascals {
-    class SymbolTable {  // ·ûºÅ±í
+    class SymbolTable {  // ç¬¦å·è¡¨
     public:
         SymbolTable(std::string tag = "", std::unordered_map<std::string, std::shared_ptr<Identifier>> map = {}, std::shared_ptr<SymbolTable> prev_table = nullptr) :
             m_tag(tag), m_map(map), m_prev_table(prev_table) {
         }
         ~SymbolTable() {}
-        std::string get_tag() {  // »ñÈ¡µ±Ç°·ûºÅ±í±êÊ¶
+        std::string get_tag() {  // è·å–å½“å‰ç¬¦å·è¡¨æ ‡è¯†
             return m_tag; 
         }
-        std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<Identifier>>> get_map() {  // »ñÈ¡µ±Ç°·ûºÅ±í
+        std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<Identifier>>> get_map() {  // è·å–å½“å‰ç¬¦å·è¡¨
             return std::make_shared<std::unordered_map<std::string, std::shared_ptr<Identifier>>>(m_map); 
         }
-        std::shared_ptr<SymbolTable> get_prev_table() {  // »ñÈ¡ÉÏÒ»²ã·ûºÅ±í
+        std::shared_ptr<SymbolTable> get_prev_table() {  // è·å–ä¸Šä¸€å±‚ç¬¦å·è¡¨
             return m_prev_table; 
         }
-        bool insert_element(std::string name, std::shared_ptr<Identifier> identifier_ptr) {  // Ïò±íÖĞÌí¼ÓĞÂµÄ¼üÖµ¶Ô
-            if (m_map.find(name) != m_map.end()) {  // ±íÖĞÒÑÓĞ¶ÔÓ¦±êÊ¶·ûÃû£¬²åÈëÊ§°Ü
+        bool insert_element(std::string name, std::shared_ptr<Identifier> identifier_ptr) {  // å‘è¡¨ä¸­æ·»åŠ æ–°çš„é”®å€¼å¯¹
+            if (m_map.find(name) != m_map.end()) {  // è¡¨ä¸­å·²æœ‰å¯¹åº”æ ‡è¯†ç¬¦åï¼Œæ’å…¥å¤±è´¥
                 return false;
             }
             m_map.insert(std::make_pair(name, identifier_ptr));
             return true;
         }
-        std::shared_ptr<Identifier> get_identifier_by_name(std::string name) {  // ¸ù¾İ±êÊ¶·ûÃû·µ»Ø¶ÔÓ¦±êÊ¶·ûµÄÖ¸Õë
+        std::shared_ptr<Identifier> get_identifier_by_name(std::string name) {  // æ ¹æ®æ ‡è¯†ç¬¦åè¿”å›å¯¹åº”æ ‡è¯†ç¬¦çš„æŒ‡é’ˆ
             auto it = m_map.find(name);
             if (it != m_map.end()) {
                 return it->second;
             }
-            if (m_prev_table != nullptr) {  // µ±Ç°²ã·ûºÅ±íÕÒ²»µ½£¬µİ¹é²éÕÒÉÏÒ»²ã
+            if (m_prev_table != nullptr) {  // å½“å‰å±‚ç¬¦å·è¡¨æ‰¾ä¸åˆ°ï¼Œé€’å½’æŸ¥æ‰¾ä¸Šä¸€å±‚
                 return m_prev_table->get_identifier_by_name(name);
             }
             return nullptr;
         }
     protected:
-        std::string m_tag;  // ÓÃÓÚ±êÊ¶±¾²ã·ûºÅ±í(º¯Êı/¹ı³ÌÃû)
-        std::unordered_map<std::string, std::shared_ptr<Identifier>> m_map;  // ¼üÎª±êÊ¶·ûÃû£¬ÖµÎª¶ÔÓ¦¸Ã±êÊ¶·ûµÄÖ¸Õë
-        std::shared_ptr<SymbolTable> m_prev_table;  // Ö¸ÏòÍâ²ã·ûºÅ±íµÄÖ¸Õë
+        std::string m_tag;  // ç”¨äºæ ‡è¯†æœ¬å±‚ç¬¦å·è¡¨(å‡½æ•°/è¿‡ç¨‹å)
+        std::unordered_map<std::string, std::shared_ptr<Identifier>> m_map;  // é”®ä¸ºæ ‡è¯†ç¬¦åï¼Œå€¼ä¸ºå¯¹åº”è¯¥æ ‡è¯†ç¬¦çš„æŒ‡é’ˆ
+        std::shared_ptr<SymbolTable> m_prev_table;  // æŒ‡å‘å¤–å±‚ç¬¦å·è¡¨çš„æŒ‡é’ˆ
     };
 }
