@@ -38,15 +38,15 @@ bool LeafNode::AnalyzeReference(SymbolTable *ts, FunctionIdentifier *fn) {
   // search table and judge if is current layer
   bool local = false;
   string id = value_.get_value<string>();
-  std::shared_ptr<Identifier> entry = ts->get_identifier_by_name(id);
-  if (entry != nullptr && local) {
-    //TODO : 等待刁仲阳修改
-    // FunctionIdentifier::Parameter.param_type pt = (*fn)[id];
-    if (pt != nullptr && pt->second == FunctionSymbol::PARAM_MODE::REFERENCE) {
-      is_ref_ = true;
-    }
-  }
-  return is_ref_;
+  // std::shared_ptr<Identifier> entry = ts->get_identifier_by_name(id);
+  // if (entry != nullptr && local) {
+  //   //TODO : 等待刁仲阳修改
+  //   FunctionIdentifier::Parameter.param_type pt = (*fn)[id];
+  //   if (pt != nullptr && pt->second == FunctionSymbol::PARAM_MODE::REFERENCE) {
+  //     is_ref_ = true;
+  //   }
+  // }
+  return fn->get_param_is_reference_by_name(id);
 }
 /////////////////////////////////////////////
 
@@ -54,27 +54,27 @@ void ProgramHeadNode::Format(FILE *dst) {
   time_t now = time(nullptr);
   tm *local = localtime(&now);
   // PRINT("/// [")
-  FormatAt(0, dst);
+  FormatFrom(0, dst);
   // PRINT("] created on %d/%d/%d\n", 1900 + local->tm_year, 1 + local->tm_mon,
   //       local->tm_mday)
 }
 
 void ProgramBodyNode::Format(FILE *dst) {
-  FormatAt(0, dst);  // const decl
-  FormatAt(1, dst);  // type decl
-  FormatAt(2, dst);  // var decl
-  FormatAt(3, dst);  // sub prog decl
+  FormatFrom(0, dst);  // const decl
+  FormatFrom(1, dst);  // type decl
+  FormatFrom(2, dst);  // var decl
+  FormatFrom(3, dst);  // sub prog decl
   PRINT("int main() {\n")
-  FormatAt(4, dst);  // comp stat
+  FormatFrom(4, dst);  // comp stat
   PRINT("return 0;\n")
   PRINT("}\n")
 }
 
 void IdListNode::Format(FILE *dst) {
-  FormatAt(0, dst);
+  FormatFrom(0, dst);
   if (grammar_type_ == GrammarType::MULTIPLE_ID) {
     PRINT(", ")
-    FormatAt(1, dst);
+    FormatFrom(1, dst);
   }
 }
 
@@ -99,7 +99,7 @@ vector<LeafNode *> IdListNode::Lists() {
 
 
 void ConstDeclarationNode::print_type(FILE *dst) {
-  if (type_ == TYPE_INT) {
+  if (type_ == TYPE_INTEGER) {
     PRINT("int ")
   } else if (type_ == TYPE_REAL) {
     PRINT("float ")
@@ -109,26 +109,26 @@ void ConstDeclarationNode::print_type(FILE *dst) {
 }
 void ConstDeclarationNode::Format(FILE *dst) {
   if (grammar_type_ == GrammarType::DECLARATION) {
-    FormatAt(0, dst);
+    FormatFrom(0, dst);
     PRINT("const ")
     print_type(dst);
-    FormatAt(1, dst);
+    FormatFrom(1, dst);
     PRINT(" = ")
-    FormatAt(2, dst);
+    FormatFrom(2, dst);
     PRINT(";\n");
   } else if (grammar_type_ == GrammarType::VALUE) {
     PRINT("const ")
     print_type(dst);
-    FormatAt(0, dst);
+    FormatFrom(0, dst);
     PRINT(" = ")
-    FormatAt(1, dst);
+    FormatFrom(1, dst);
     PRINT(";\n");
   }
 }
 
-void VariableDeclarationNode::Format(FILE *dst) {
+void VarDeclarationNode::Format(FILE *dst) {
   if (grammar_type_ == GrammarType::MULTIPLE_DECL) {
-    FormatAt(0, dst);
+    FormatFrom(0, dst);
   }
   // analyze current layer
   size_t last = child_list_.size() - 1;
@@ -165,37 +165,19 @@ void VariableDeclarationNode::Format(FILE *dst) {
 }
 
 
-void TypeDeclarationNode::Format(FILE *dst) {
-  if (grammar_type_ == GrammarType::MULTIPLE_DECL) {
-    FormatAt(0, dst);
-  }
-  // analyze current layer
-  TypeNode *tnode = (*child_list_.rbegin())->DynamicCast<TypeNode>();
-  LeafNode *idnode = (*(child_list_.rbegin() + 1))->DynamicCast<LeafNode>();
-
-  TypeNode *base_type = tnode->base_type();
-  PRINT("typedef ")
-  base_type->Format(dst);
-  PRINT(" ")
-  idnode->Format(dst);
-  if (tnode->grammar_type() == TypeNode::GrammarType::ARRAY) {
-    tnode->PeriodsFormat(dst);
-  }
-  PRINT(";\n")
-}
 
 void TypeNode::Format(FILE *dst) {
   switch (grammar_type_) {
     case GrammarType::BASIC_TYPE:
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       break;
     case GrammarType::ARRAY:  // upper funciton will solve this
       break;
-    case GrammarType::RECORD_TYPE:
-      PRINT("struct {\n")
-      FormatAt(0, dst);
-      PRINT("}")
-      break;
+    // case GrammarType::RECORD_TYPE:  删了？
+    //   PRINT("struct {\n")
+    //   FormatFrom(0, dst);
+    //   PRINT("}")
+    //   break;
   }
 }
 
@@ -207,11 +189,12 @@ void TypeNode::PeriodsFormat(FILE *dst) {
 }
 
 void BasicTypeNode::Format(FILE *dst) {
-  PRINT("%s", type_->c_name().c_str())
+  PRINT("%s", type_->get_c_name().c_str())
 }
 
 void PeriodNode::Format(FILE *dst) { PRINT("[%d]", len_) }
 
+//TODO: 改为递归，加一个SubprogramDeclarationsNode
 void SubprogramDeclarationNode::Format(FILE *dst) {
   auto headnode = child_list_[0]->DynamicCast<SubprogramHeadNode>();
   bool func_flag =
@@ -224,10 +207,10 @@ void SubprogramDeclarationNode::Format(FILE *dst) {
     type = headnode->get(2)->DynamicCast<BasicTypeNode>()->type();
   }
 
-  FormatAt(0, dst);
+  FormatFrom(0, dst);
   PRINT("{\n")
-  if (func_flag) PRINT("%s %s;\n", type->c_name().c_str(), id.c_str())
-  FormatAt(1, dst);
+  if (func_flag) PRINT("%s %s;\n", type->get_c_name().c_str(), id.c_str())
+  FormatFrom(1, dst);
   if (func_flag) PRINT("return %s;\n", id.c_str())
   PRINT("}\n")
 }
@@ -236,14 +219,14 @@ void SubprogramHeadNode::Format(FILE *dst) {
   if (grammar_type_ == GrammarType::PROCEDURE) {
     PRINT("void ")
   } else {
-    FormatAt(2, dst);  // basic_type
+    FormatFrom(2, dst);  // basic_type
     PRINT(" ")
   }
-  FormatAt(0, dst);
-  FormatAt(1, dst);
+  FormatFrom(0, dst);
+  FormatFrom(1, dst);
 }
 
-void FormalParamNode::Format(FILE *dst) {
+void FormalParameterNode::Format(FILE *dst) {
   PRINT("(")
   for (auto child : child_list_) {
     child->Format(dst);
@@ -251,7 +234,7 @@ void FormalParamNode::Format(FILE *dst) {
   PRINT(")")
 }
 
-void ParamListsNode::Format(FILE *dst) {
+void ParameterListsNode::Format(FILE *dst) {
   for (int i = 0; i < child_list_.size(); i++) {
     child_list_[i]->Format(dst);
     if (i < child_list_.size() - 1) {
@@ -261,14 +244,14 @@ void ParamListsNode::Format(FILE *dst) {
 }
 
 
-void VarParamNode::Format(FILE *dst) {
-  ValueParamNode *vp = child_list_[0]->DynamicCast<ValueParamNode>();
+void VarParameterNode::Format(FILE *dst) {
+  ValueParameterNode *vp = child_list_[0]->DynamicCast<ValueParameterNode>();
   vp->Format(true, dst);
 }
 
-void ValueParamNode::Format(FILE *dst) { this->Format(false, dst); }
+void ValueParameterNode::Format(FILE *dst) { this->Format(false, dst); }
 
-void ValueParamNode::Format(bool ref, FILE *dst) {
+void ValueParameterNode::Format(bool ref, FILE *dst) {
   // get idlists
   IdListNode *idnode = child_list_[0]->DynamicCast<IdListNode>();
   // get type
@@ -293,26 +276,26 @@ void StatementNode::Format(FILE *dst) {
       auto exp = child_list_[1]->DynamicCast<ExpressionNode>();
       switch (exp->target_type()) {
         case ExpressionNode::TargetType::EXPRESSION: {  // other expression
-          FormatAt(0, dst);
+          FormatFrom(0, dst);
           PRINT(" = ");
-          FormatAt(1, dst);
+          FormatFrom(1, dst);
           break;
         }
         case ExpressionNode::TargetType::VAR_ARRAY: {  // array-list
           PRINT("memcpy(");
-          FormatAt(0, dst);
+          FormatFrom(0, dst);
           PRINT(", ");
-          FormatAt(1, dst);
+          FormatFrom(1, dst);
           PRINT(", sizeof(");
-          FormatAt(0, dst);
+          FormatFrom(0, dst);
           PRINT("))")
           break;
         }
         case ExpressionNode::TargetType::CONST_STRING: {  // const-string
           PRINT("strcpy(");
-          FormatAt(0, dst);
+          FormatFrom(0, dst);
           PRINT(", ");
-          FormatAt(1, dst);
+          FormatFrom(1, dst);
           PRINT(")")
           break;
         }
@@ -322,37 +305,38 @@ void StatementNode::Format(FILE *dst) {
     }
     case GrammarType::PROCEDURE_CALL:
     case GrammarType::COMPOUND_STATEMENT: {
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       break;
     }
     case GrammarType::IF_STATEMENT: {
       PRINT("if (")
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       PRINT(") {\n")
-      FormatAt(1, dst);
+      FormatFrom(1, dst);
       PRINT("}\n")
-      FormatAt(2, dst);
+      FormatFrom(2, dst);
       break;
     }
     case GrammarType::FOR_STATEMENT: {
       auto updown_node = child_list_[2]->DynamicCast<UpdownNode>();
       bool increase = updown_node->IsIncrease();
       PRINT("for (")
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       PRINT("=")
-      FormatAt(1, dst);
+      FormatFrom(1, dst);
       PRINT(";")
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       PRINT(increase ? "<=" : ">=")
-      FormatAt(3, dst);
+      FormatFrom(3, dst);
       PRINT(";")
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       PRINT(increase ? "++" : "--")
       PRINT(") {\n")
-      for (int i = 4; i < child_list_.size(); i++) FormatAt(i, dst);
+      for (int i = 4; i < child_list_.size(); i++) FormatFrom(i, dst);
       PRINT("}\n")
       break;
     }
+    //TODO :改为Read，去掉Readln
     case GrammarType::READ_STATEMENT:
     case GrammarType::READLN_STATEMENT: {
       if(child_list_.size() > 0){
@@ -383,39 +367,14 @@ void StatementNode::Format(FILE *dst) {
       PRINT(");\n")
       break;
     }
-    case GrammarType::CASE_STATEMET: {
-      PRINT("switch (")
-      FormatAt(0, dst);
-      PRINT(") {\n")
-      FormatAt(1, dst);
-      PRINT("}\n")
-      break;
-    }
-    case GrammarType::WHILE_STATEMENT: {
-      PRINT("while (")
-      FormatAt(0, dst);
-      PRINT(") {\n")
-      FormatAt(1, dst);
-      PRINT("}\n")
-      break;
-    }
-    case GrammarType::REPEAT_STATEMENT: {
-      PRINT("do {\n")
-      FormatAt(0, dst);
-      PRINT("} while (!(")
-      FormatAt(1, dst);
-      PRINT("));\n")
-      break;
-    }
   }
 }
 
 string VariableListNode::FormatString() {
   string format = "";
   for (int i = 0; i < basic_types.size(); i++) {
-    BasicType *type = basic_types[i];
-    string chfmt = (type == TYPE_INT || type == TYPE_BOOL) ? "%d "
-                   : type == TYPE_STRINGLIKE               ? "%s "
+    std::shared_ptr<BasicType> type = basic_types[i];
+    string chfmt = (type == TYPE_INTEGER || type == TYPE_BOOLEAN) ? "%d "
                    : type == TYPE_REAL                     ? "%f "
                    : type == TYPE_CHAR
                        ? "%c "
@@ -442,7 +401,8 @@ void VariableListNode::Format(bool ref, FILE *dst) {
 bool VariableListNode::set_types(std::vector<TypeTemplate *> *type_list) {
   if (!type_list) return true;
   for (auto i : *type_list) {
-    if (is_basic(i) || i == TYPE_STRINGLIKE) {
+    //TODO 
+    if (TypeTemplate::is_basic_type(i)) {
       basic_types.push_back(dynamic_cast<BasicType *>(i));
     } else if (i != TYPE_ERROR && i->StringLike()) {
       basic_types.push_back(TYPE_STRINGLIKE);
@@ -461,10 +421,10 @@ void VariableNode::Format(bool ref, FILE *dst) {
 void IDVarPartNode::Format(FILE *dst) {
   if (grammar_type_ == GrammarType::_ID) {
     PRINT(".")
-    FormatAt(0, dst);
+    FormatFrom(0, dst);
   } else if (grammar_type_ == GrammarType::EXP_LIST) {
     PRINT("[")
-    FormatAt(0, dst);
+    FormatFrom(0, dst);
     if (array_lb_ > 0)
       PRINT(" - %d", array_lb_)
     else if (array_lb_ < 0)
@@ -474,26 +434,26 @@ void IDVarPartNode::Format(FILE *dst) {
 }
 
 void BranchNode::Format(FILE *dst) {
-  FormatAt(0, dst);
+  FormatFrom(0, dst);
   PRINT("{\n")
-  FormatAt(1, dst);
+  FormatFrom(1, dst);
   PRINT("break;\n}\n")
 }
 
 void ConstListNode::Format(FILE *dst) {
-  if (child_list_.size() == 2) FormatAt(0, dst);
+  if (child_list_.size() == 2) FormatFrom(0, dst);
   PRINT("case ")
-  FormatAt(-1, dst);
+  FormatFrom(-1, dst);
   PRINT(":")
 }
 
 void ProcedureCallNode::Format(FILE *dst) {
-  FormatAt(0, dst);
+  FormatFrom(0, dst);
   if (grammar_type_ == GrammarType::ID) {
     PRINT("();")
   } else if (grammar_type_ == GrammarType::ID_EXP_LIST) {
     PRINT("(")
-    FormatAt(1, dst);
+    FormatFrom(1, dst);
     PRINT(");")
   }
 }
@@ -566,10 +526,10 @@ void ExpressionNode::Format(FILE *dst) {
 
 void StrExpressionNode::Format(FILE *dst) {
   if (child_list_.size() == 2) {
-    FormatAt(0, dst);
+    FormatFrom(0, dst);
   }
   PRINT("\"")
-  FormatAt(-1, dst);
+  FormatFrom(-1, dst);
   PRINT("\"")
 }
 
@@ -584,25 +544,25 @@ void FactorNode::Format(FILE *dst) {
   switch (grammar_type_) {
     case GrammarType::UCONST_VAR:
     case GrammarType::VARIABLE:
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       break;
 
     case GrammarType::EXP:
       PRINT("(")
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       PRINT(")")
       break;
 
     case GrammarType::ID_EXP_LIST:
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       PRINT("(")
-      FormatAt(1, dst);
+      FormatFrom(1, dst);
       PRINT(")")
       break;
 
     case GrammarType::NOT:
       PRINT("!")
-      FormatAt(0, dst);
+      FormatFrom(0, dst);
       break;
 
     default:

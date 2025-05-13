@@ -1,63 +1,64 @@
-// æ ‡è¯†ç¬¦å®šä¹‰
+// ±êÊ¶·û¶¨Òå
 #pragma once
 #include "pascal_types.h"
 
 namespace pascals {
 
-	class Identifier {  // æ ‡è¯†ç¬¦ï¼Œé»˜è®¤ä¸ºå˜é‡å
+	class Identifier {  // ±êÊ¶·û£¬Ä¬ÈÏÎª±äÁ¿Ãû
 	public:
-		enum class IDENTIFIER_TYPE { VAR, CONST, FUNCTION };  // æ ‡è¯†ç¬¦ç±»å‹(å˜é‡å/å¸¸é‡å/å‡½æ•°å)
+		enum class IDENTIFIER_TYPE { VAR, CONST, FUNCTION };  // ±êÊ¶·ûÀàĞÍ(±äÁ¿Ãû/³£Á¿Ãû/º¯ÊıÃû)
 		Identifier();
-		Identifier(std::string name, std::shared_ptr<TypeTemplate> value_type, bool is_reference = false, int declare_line = 0);  // é»˜è®¤æ„é€ ä¸ºå˜é‡å
+		Identifier(std::string name, std::shared_ptr<TypeTemplate> value_type, bool is_reference = false, int declare_line = 0);  // Ä¬ÈÏ¹¹ÔìÎª±äÁ¿Ãû
 		virtual ~Identifier();
-		std::string get_name();  // è·å–æ ‡è¯†ç¬¦å
-		std::shared_ptr<TypeTemplate> get_value_type();  // è·å–æ ‡è¯†ç¬¦å€¼çš„ç±»å‹
-		IDENTIFIER_TYPE get_identifier_type();  // è·å–æ ‡è¯†ç¬¦ç±»å‹
-		virtual bool is_reference();  // æ˜¯å¦å¼•ç”¨ç±»å‹
-		int get_declare_line();  // è·å–æ ‡è¯†ç¬¦å£°æ˜è¡Œ
-		virtual void set_reference(bool is_reference);  // è®¾ç½®æ˜¯å¦ä¸ºå¼•ç”¨ç±»å‹
+		std::string get_name();  // »ñÈ¡±êÊ¶·ûÃû
+		std::shared_ptr<TypeTemplate> get_value_type();  // »ñÈ¡±êÊ¶·ûÖµµÄÀàĞÍ
+		IDENTIFIER_TYPE get_identifier_type();  // »ñÈ¡±êÊ¶·ûÀàĞÍ
+		virtual bool is_reference();  // ÊÇ·ñÒıÓÃÀàĞÍ
+		int get_declare_line();  // »ñÈ¡±êÊ¶·ûÉùÃ÷ĞĞ
+		virtual void set_reference(bool is_reference);  // ÉèÖÃÊÇ·ñÎªÒıÓÃÀàĞÍ
 	protected:
-		std::string m_name;  // æ ‡è¯†ç¬¦å
-		std::shared_ptr<TypeTemplate> m_value_type;  // æ ‡è¯†ç¬¦å€¼çš„ç±»å‹
-		IDENTIFIER_TYPE m_identifier_type;  // æ ‡è¯†ç¬¦ç±»å‹
-		bool m_is_reference;  // æ˜¯å¦å¼•ç”¨ç±»å‹
-		int m_declare_line;  // å£°æ˜è¡Œ
+		std::string m_name;  // ±êÊ¶·ûÃû
+		std::shared_ptr<TypeTemplate> m_value_type;  // ±êÊ¶·ûÖµµÄÀàĞÍ
+		IDENTIFIER_TYPE m_identifier_type;  // ±êÊ¶·ûÀàĞÍ
+		bool m_is_reference;  // ÊÇ·ñÒıÓÃÀàĞÍ
+		int m_declare_line;  // ÉùÃ÷ĞĞ
 	};
 
-	class ConstIdentifier : public Identifier {  // ç»§æ‰¿è‡ªIdentifierï¼Œè¡¨ç¤ºå¸¸é‡å
+	class ConstIdentifier : public Identifier {  // ¼Ì³Ğ×ÔIdentifier£¬±íÊ¾³£Á¿Ãû
 	public:
 		ConstIdentifier();
-		ConstIdentifier(std::string name, ConstValue value, int declare_line);  // é»˜è®¤æ„é€ ä¸ºå¸¸é‡å
+		ConstIdentifier(std::string name, ConstValue value, int declare_line);  // Ä¬ÈÏ¹¹ÔìÎª³£Á¿Ãû
 		~ConstIdentifier();
-		ConstValue get_value();  // è·å–å¸¸é‡å€¼
-		bool is_reference() override;  // æ˜¯å¦å¼•ç”¨ç±»å‹ï¼Œå¸¸é‡åä¸ºéå¼•ç”¨
-		void set_reference(bool r) override;  // è®¾ç½®æ˜¯å¦ä¸ºå¼•ç”¨ç±»å‹ï¼Œå¸¸é‡åä¸ºéå¼•ç”¨
+		ConstValue get_value();  // »ñÈ¡³£Á¿Öµ
+		bool is_reference() override;  // ÊÇ·ñÒıÓÃÀàĞÍ£¬³£Á¿ÃûÎª·ÇÒıÓÃ
+		void set_reference(bool r) override;  // ÉèÖÃÊÇ·ñÎªÒıÓÃÀàĞÍ£¬³£Á¿ÃûÎª·ÇÒıÓÃ
 	private:
-		ConstValue m_value;  // å¸¸é‡å€¼
+		ConstValue m_value;  // ³£Á¿Öµ
 	};
 
-	class FunctionIdentifier : public Identifier {  // ç»§æ‰¿è‡ªIdentifierï¼Œè¡¨ç¤ºå‡½æ•°å
+	class FunctionIdentifier : public Identifier {  // ¼Ì³Ğ×ÔIdentifier£¬±íÊ¾º¯ÊıÃû
 	public:
-		struct Parameter {  // å‡½æ•°å‚æ•°
-			std::string param_name;  // å‚æ•°å
-			std::shared_ptr<TypeTemplate> param_type;  // å‚æ•°ç±»å‹
-			bool is_reference;   // æ˜¯å¦å¼•ç”¨ç±»å‹
+		struct Parameter {  // º¯Êı²ÎÊı
+			std::string param_name;  // ²ÎÊıÃû
+			std::shared_ptr<TypeTemplate> param_type;  // ²ÎÊıÀàĞÍ
+			bool is_reference;   // ÊÇ·ñÒıÓÃÀàĞÍ
 		};
 
 		FunctionIdentifier();
-		FunctionIdentifier(const FunctionIdentifier& other);  // æ·±æ‹·è´æ„é€ 
+		FunctionIdentifier(const FunctionIdentifier& other);  // Éî¿½±´¹¹Ôì
 		FunctionIdentifier(std::string name, std::shared_ptr<BasicType> return_type, int decl_line, const std::vector<Parameter>& params_list);
 		FunctionIdentifier(std::string name, std::shared_ptr<BasicType> return_type, int decl_line);
 
-		int get_param_count();  // è·å–å‚æ•°æ•°é‡
-		std::shared_ptr<Parameter> get_param_at(int index);  // è·å–ç¬¬index+1ä¸ªå‚æ•°æŒ‡é’ˆ
-		bool add_param(const Parameter& param);  // å‘å‚æ•°åˆ—è¡¨æœ«å°¾æ·»åŠ å‚æ•°
-        bool is_certain_param_reference(std::string param_name);  // åˆ¤æŒ‡å®šå‚æ•°æ˜¯å¦å¼•ç”¨ç±»å‹
-		bool is_reference() override;  // æ˜¯å¦å¼•ç”¨ç±»å‹ï¼Œå‡½æ•°åä¸ºéå¼•ç”¨
-		void set_reference(bool r) override;  // è®¾ç½®æ˜¯å¦ä¸ºå¼•ç”¨ç±»å‹ï¼Œå‡½æ•°åä¸ºéå¼•ç”¨
+		int get_param_count();  // »ñÈ¡²ÎÊıÊıÁ¿
+		std::shared_ptr<Parameter> get_param_at(int index);  // »ñÈ¡µÚindex+1¸ö²ÎÊıÖ¸Õë
+		bool add_param(const Parameter& param);  // Ïò²ÎÊıÁĞ±íÄ©Î²Ìí¼Ó²ÎÊı
+        bool is_certain_param_reference(std::string param_name);  // ÅĞÖ¸¶¨²ÎÊıÊÇ·ñÒıÓÃÀàĞÍ
+		bool is_reference() override;  // ÊÇ·ñÒıÓÃÀàĞÍ£¬º¯ÊıÃûÎª·ÇÒıÓÃ
+		void set_reference(bool r) override;  // ÉèÖÃÊÇ·ñÎªÒıÓÃÀàĞÍ£¬º¯ÊıÃûÎª·ÇÒıÓÃ
+		std::shared_ptr<TypeTemplate> get_param_type_by_name(std::string name);  // ¸ù¾İ²ÎÊıÃû»ñÈ¡ÆäÀàĞÍ
+		bool get_param_is_reference_by_name(std::string name);  // ¸ù¾İ²ÎÊıÃû»ñÈ¡ÊÇ·ñÎªÒıÓÃ
 
-
-		// ç­‰å¾…å®ç°
+		// µÈ´ıÊµÏÖ
 		bool AssertParams(const std::vector<TypeTemplate*>& params,
 			const std::vector<bool> value_type_in);
 		bool AssertParams();
@@ -65,7 +66,7 @@ namespace pascals {
 		std::vector<bool> ParamRefVec();
 
 	private:
-		std::vector<Parameter> m_params_list;  // å‡½æ•°å‚æ•°åˆ—è¡¨
-		std::unordered_map<std::string, int> m_param_map;  // é”®ä¸ºå‚æ•°åï¼Œå€¼ä¸ºå‚æ•°åœ¨m_params_listä¸­ä¸‹æ ‡
+		std::vector<Parameter> m_params_list;  // º¯Êı²ÎÊıÁĞ±í
+		std::unordered_map<std::string, int> m_param_map;  // ¼üÎª²ÎÊıÃû£¬ÖµÎª²ÎÊıÔÚm_params_listÖĞÏÂ±ê
 	};
 }
