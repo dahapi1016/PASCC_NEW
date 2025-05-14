@@ -178,7 +178,7 @@ namespace pascals {
 
         private:
             GrammarType grammar_type_;
-            BasicType* type_;
+            std::shared_ptr<BasicType> type_;
         };
 
         class ConstValueNode : public Node {
@@ -378,7 +378,7 @@ namespace pascals {
             bool set_types(std::vector<TypeTemplate*>* type_list);
 
         private:
-            std::vector<BasicType*> basic_types;
+            std::vector<std::shared_ptr<BasicType>> basic_types;
             GrammarType grammar_type_;
         };
 
@@ -450,7 +450,7 @@ namespace pascals {
             void set_ref(std::stack<bool>* ref);
 
         private:
-            std::vector<BasicType*> basic_types;
+            std::vector<std::shared_ptr<pascals::BasicType>> basic_types;
             GrammarType grammar_type_;
         };
 

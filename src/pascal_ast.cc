@@ -419,7 +419,7 @@ void VariableNode::Format(bool ref, FILE *dst) {
 }
 
 void IDVarPartNode::Format(FILE *dst) {
-  if (grammar_type_ == GrammarType::_ID) {
+  if (grammar_type_ == GrammarType::EPSILON) {
     PRINT(".")
     FormatFrom(0, dst);
   } else if (grammar_type_ == GrammarType::EXP_LIST) {
@@ -433,19 +433,6 @@ void IDVarPartNode::Format(FILE *dst) {
   }
 }
 
-void BranchNode::Format(FILE *dst) {
-  FormatFrom(0, dst);
-  PRINT("{\n")
-  FormatFrom(1, dst);
-  PRINT("break;\n}\n")
-}
-
-void ConstListNode::Format(FILE *dst) {
-  if (child_list_.size() == 2) FormatFrom(0, dst);
-  PRINT("case ")
-  FormatFrom(-1, dst);
-  PRINT(":")
-}
 
 void ProcedureCallNode::Format(FILE *dst) {
   FormatFrom(0, dst);
@@ -458,7 +445,7 @@ void ProcedureCallNode::Format(FILE *dst) {
   }
 }
 
-void ElseNode::Format(FILE *dst) {
+void ElsePartNode::Format(FILE *dst) {
   switch (grammar_type_) {
     case GrammarType::EPSILON:
       return;
@@ -472,9 +459,8 @@ void ElseNode::Format(FILE *dst) {
 string ExpressionListNode::FormatString() {
   string format = "";
   for (int i = 0; i < basic_types.size(); i++) {
-    BasicType *type = basic_types[i];
-    string chfmt = (type == TYPE_INT || type == TYPE_BOOL) ? "%d"
-                   : type == TYPE_STRINGLIKE               ? "%s"
+    std::shared_ptr<pascals::BasicType> type = basic_types[i];
+    string chfmt = (type == TYPE_INTEGER || type == TYPE_BOOLEAN) ? "%d"
                    : type == TYPE_REAL                     ? "%.2f"
                    : type == TYPE_CHAR
                        ? "%c"
@@ -497,13 +483,14 @@ void ExpressionListNode::Format(FILE *dst) {
 bool ExpressionListNode::set_types(std::vector<TypeTemplate *> *type_list) {
   if (!type_list) return true;
   for (auto i : *type_list) {
-    if (is_basic(i) || i == TYPE_STRINGLIKE) {
-      basic_types.push_back(dynamic_cast<BasicType *>(i));
-    } else if (i != TYPE_ERROR && i->StringLike()) {
-      basic_types.push_back(TYPE_STRINGLIKE);
-    } else {
-      return false;
-    }
+    // if (is_basic(i) || i == TYPE_STRINGLIKE) {
+    //   basic_types.push_back(dynamic_cast<BasicType *>(i));
+    // } else if (i != TYPE_ERROR && i->StringLike()) {
+    //   basic_types.push_back(TYPE_STRINGLIKE);
+    // } else {
+    //   return false;
+    // }
+    return false;
   }
   return true;
 }
@@ -518,7 +505,7 @@ void ExpressionListNode::set_ref(std::stack<bool> *ref) {
     child_list_[0]->DynamicCast<ExpressionListNode>()->set_ref(ref);
   }
 }
-
+//TODO: 改一下，加入simple expression
 void ExpressionNode::Format(FILE *dst) {
   if (is_ref_) PRINT("&")
   Node::Format(dst);
