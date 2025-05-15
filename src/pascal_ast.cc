@@ -318,19 +318,17 @@ void StatementNode::Format(FILE *dst) {
       break;
     }
     case GrammarType::FOR_STATEMENT: {
-      auto updown_node = child_list_[2]->DynamicCast<UpdownNode>();
-      bool increase = updown_node->IsIncrease();
       PRINT("for (")
       FormatFrom(0, dst);
       PRINT("=")
       FormatFrom(1, dst);
       PRINT(";")
       FormatFrom(0, dst);
-      PRINT(increase ? "<=" : ">=")
+      PRINT("<=")
       FormatFrom(3, dst);
       PRINT(";")
       FormatFrom(0, dst);
-      PRINT(increase ? "++" : "--")
+      PRINT("++")
       PRINT(") {\n")
       for (int i = 4; i < child_list_.size(); i++) FormatFrom(i, dst);
       PRINT("}\n")
@@ -402,11 +400,14 @@ bool VariableListNode::set_types(std::vector<TypeTemplate *> *type_list) {
   if (!type_list) return true;
   for (auto i : *type_list) {
     //TODO 
-    if (TypeTemplate::is_basic_type(i)) {
-      basic_types.push_back(dynamic_cast<BasicType *>(i));
-    } else if (i != TYPE_ERROR && i->StringLike()) {
-      basic_types.push_back(TYPE_STRINGLIKE);
-    } else {
+    if (TypeTemplate::is_basic_type(std::shared_ptr<TypeTemplate>(i))) {
+// 原代码使用 dynamic_cast 转换为 std::shared_ptr<BasicType> 有误，需要先将 TypeTemplate* 转换为 BasicType*，再用 std::shared_ptr 包装
+      basic_types.push_back(std::shared_ptr<BasicType>(dynamic_cast<BasicType*>(i)));
+    } 
+    // else if (i != TYPE_ERROR && i->StringLike()) {
+    //   basic_types.push_back(TYPE_STRINGLIKE);
+    // } 
+    else {
       return false;
     }
   }
@@ -511,14 +512,6 @@ void ExpressionNode::Format(FILE *dst) {
   Node::Format(dst);
 }
 
-void StrExpressionNode::Format(FILE *dst) {
-  if (child_list_.size() == 2) {
-    FormatFrom(0, dst);
-  }
-  PRINT("\"")
-  FormatFrom(-1, dst);
-  PRINT("\"")
-}
 
 void TermNode::Format(FILE *dst) {
   if (op_div) PRINT("(float)")

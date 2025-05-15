@@ -19,7 +19,7 @@ namespace pascals {
 		virtual ~TypeTemplate();  // 析构函数
 		TYPE get_type();  // 获取类型
 		virtual std::string get_pascal_name() = 0;  // 获取对应的Pascal风格数据类型名称
-		bool is_basic_type(std::shared_ptr<TypeTemplate> type);  // 判t是否为基础类型
+		static bool is_basic_type(std::shared_ptr<TypeTemplate> type);  // 判t是否为基础类型
 		bool is_same(std::shared_ptr<TypeTemplate> type1, std::shared_ptr<TypeTemplate> type2);  // 判两个类型是否相同
 	protected:
 		TYPE m_type;  // 类型
