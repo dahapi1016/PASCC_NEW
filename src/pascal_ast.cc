@@ -195,7 +195,7 @@ void BasicTypeNode::Format(FILE *dst) {
 void PeriodNode::Format(FILE *dst) { PRINT("[%d]", len_) }
 
 //TODO: 改为递归，加一个SubprogramDeclarationsNode
-void SubprogramDeclarationNode::Format(FILE *dst) {
+void SubprogramNode::Format(FILE *dst) {
   auto headnode = child_list_[0]->DynamicCast<SubprogramHeadNode>();
   bool func_flag =
       (headnode->grammar_type() == SubprogramHeadNode::GrammarType::FUNCTION);
@@ -335,32 +335,23 @@ void StatementNode::Format(FILE *dst) {
       break;
     }
     //TODO :改为Read，去掉Readln
-    case GrammarType::READ_STATEMENT:
-    case GrammarType::READLN_STATEMENT: {
+    case GrammarType::READ_STATEMENT:{
       if(child_list_.size() > 0){
           auto *vlnodes = child_list_[0]->DynamicCast<VariableListNode>();
           PRINT("scanf(\"%s\", ", vlnodes->FormatString().c_str());
           vlnodes->Format(true, dst);
           PRINT(");\n")
       }
-      if (grammar_type_ == GrammarType::READLN_STATEMENT) {
-          PRINT("while(1){\nchar c = getchar(); if(c == '\\n' || c== EOF) break;\n};\n")
-      }
       break;
     }
-    case GrammarType::WRITE_STATEMENT:
-    case GrammarType::WRITELN_STATEMENT: {
+    case GrammarType::WRITE_STATEMENT: {
       if (child_list_.size() == 0) {
         PRINT("printf(\"\\n\");\n")
         break;
       }
       auto *elnode = child_list_[0]->DynamicCast<ExpressionListNode>();
-      if (grammar_type_ == GrammarType::WRITELN_STATEMENT) {
-        PRINT("printf(\"%s\\n\"", elnode->FormatString().c_str())
-      } else {
-        PRINT("printf(\"%s\"", elnode->FormatString().c_str())
-      }
-      PRINT(", ")
+      PRINT("printf(\"%s\", ", elnode->FormatString().c_str())
+      // PRINT(", ")
       elnode->Format(dst);
       PRINT(");\n")
       break;
