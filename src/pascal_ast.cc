@@ -513,7 +513,7 @@ void TermNode::Format(FILE *dst) {
 
 void FactorNode::Format(FILE *dst) {
   switch (grammar_type_) {
-    case GrammarType::UCONST_VAR:
+    case GrammarType::NUM:
     case GrammarType::VARIABLE:
       FormatFrom(0, dst);
       break;

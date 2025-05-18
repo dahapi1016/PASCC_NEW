@@ -1,6 +1,6 @@
 ﻿#pragma once
-#ifndef PASCC_AST_H
-#define PASCC_AST_H
+#ifndef PASCAL_AST_H
+#define PASCAL_AST_H
 
 #include <iostream>
 #include <stack>
@@ -492,7 +492,7 @@ namespace pascals {
         class FactorNode : public Node {
         public:
             enum class GrammarType {
-                UCONST_VAR,   // factor → unsigned_const_variable
+                NUM,   // factor → unsigned_const_variable
                 VARIABLE,     // factor → variable
                 EXP,          // factor → ( expression )
                 ID_EXP_LIST,  // factor → id ( expression_list )

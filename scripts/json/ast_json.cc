@@ -2,8 +2,9 @@
 // Created by jianxff on 2023/4/17.
 //
 #include <fstream>
+#include <json.hpp> 
 
-#include "ast.h"
+#include "pascal_ast.h"
 #include "log.h"
 
 using std::string;
@@ -33,11 +34,11 @@ Node *Node::Create(std::string node_name, int sub_type, int other_type) {
   } else if (node_name == "const_var") {
     return new ConstVariableNode();
   } else if (node_name == "var_decls") {
-    return new VariableDeclarationsNode();
+    return new VarDeclarationsNode();
   } else if (node_name == "var_decl") {
-    return new VariableDeclarationNode(
-        (VariableDeclarationNode::GrammarType)sub_type,
-        (VariableDeclarationNode::ListType)other_type);
+    return new VarDeclarationNode(
+        (VarDeclarationNode::GrammarType)sub_type,
+        (VarDeclarationNode::ListType)other_type);
   } else if (node_name == "type_decls") {
     return new TypeDeclarationsNode();
   } else if (node_name == "type_decl") {
