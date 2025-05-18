@@ -21,7 +21,7 @@ void AST::Format(FILE *dst) {
 //////////////////////////////
 
 void LeafNode::Format(FILE *dst) {
-    std::shared_ptr<pascals::BasicType> tp = value_.get_type();
+    BasicType* tp = value_.get_type();
   if (tp == TYPE_INTEGER) {
     PRINT("%d", value_.get_value<int>())
   } else if (tp == TYPE_REAL) {
@@ -38,7 +38,7 @@ bool LeafNode::AnalyzeReference(SymbolTable *ts, FunctionIdentifier *fn) {
   // search table and judge if is current layer
   bool local = false;
   string id = value_.get_value<string>();
-  // std::shared_ptr<Identifier> entry = ts->get_identifier_by_name(id);
+  // Identifier* entry = ts->get_identifier_by_name(id);
   // if (entry != nullptr && local) {
   //   //TODO : 等待刁仲阳修改
   //   FunctionIdentifier::Parameter.param_type pt = (*fn)[id];
@@ -132,7 +132,7 @@ void VarDeclarationNode::Format(FILE *dst) {
   }
   // analyze current layer
   size_t last = child_list_.size() - 1;
-  std::shared_ptr<pascals::ast::Node> tnode = child_list_[last];
+  Node* tnode = child_list_[last];
   vector<LeafNode *> idlist =
       child_list_[last - 1]->DynamicCast<IdListNode>()->Lists();
 
@@ -362,7 +362,7 @@ void StatementNode::Format(FILE *dst) {
 string VariableListNode::FormatString() {
   string format = "";
   for (int i = 0; i < basic_types.size(); i++) {
-    std::shared_ptr<BasicType> type = basic_types[i];
+    BasicType* type = basic_types[i];
     string chfmt = (type == TYPE_INTEGER || type == TYPE_BOOLEAN) ? "%d "
                    : type == TYPE_REAL                     ? "%f "
                    : type == TYPE_CHAR
@@ -391,9 +391,8 @@ bool VariableListNode::set_types(std::vector<TypeTemplate *> *type_list) {
   if (!type_list) return true;
   for (auto i : *type_list) {
     //TODO 
-    if (TypeTemplate::is_basic_type(std::shared_ptr<TypeTemplate>(i))) {
-// 原代码使用 dynamic_cast 转换为 std::shared_ptr<BasicType> 有误，需要先将 TypeTemplate* 转换为 BasicType*，再用 std::shared_ptr 包装
-      basic_types.push_back(std::shared_ptr<BasicType>(dynamic_cast<BasicType*>(i)));
+    if (TypeTemplate::is_basic_type(i)) {
+      basic_types.push_back(dynamic_cast<BasicType*>(i));
     } 
     // else if (i != TYPE_ERROR && i->StringLike()) {
     //   basic_types.push_back(TYPE_STRINGLIKE);
@@ -451,7 +450,7 @@ void ElsePartNode::Format(FILE *dst) {
 string ExpressionListNode::FormatString() {
   string format = "";
   for (int i = 0; i < basic_types.size(); i++) {
-    std::shared_ptr<pascals::BasicType> type = basic_types[i];
+    BasicType* type = basic_types[i];
     string chfmt = (type == TYPE_INTEGER || type == TYPE_BOOLEAN) ? "%d"
                    : type == TYPE_REAL                     ? "%.2f"
                    : type == TYPE_CHAR

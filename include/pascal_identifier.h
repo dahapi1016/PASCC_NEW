@@ -50,7 +50,7 @@ namespace pascals {
 		FunctionIdentifier(std::string name, BasicType* return_type, int decl_line);
 
 		int get_param_count();  // 获取参数数量
-		std::shared_ptr<Parameter> get_param_at(int index);  // 获取第index+1个参数指针
+		Parameter * get_param_at(int index);  // 获取第index+1个参数指针
 		bool add_param(const Parameter& param);  // 向参数列表末尾添加参数
         bool is_certain_param_reference(std::string param_name);  // 判指定参数是否引用类型
 		bool is_reference() override;  // 是否引用类型，函数名为非引用

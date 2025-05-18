@@ -71,8 +71,9 @@ namespace pascals {
 	int FunctionIdentifier::get_param_count() {  // 获取参数数量
 		return m_params_list.size();
 	}
-	std::shared_ptr<FunctionIdentifier::Parameter> FunctionIdentifier::get_param_at(int index) {  // 获取第index+1个参数指针
-		return std::make_shared<Parameter>(m_params_list[index]);
+	FunctionIdentifier::Parameter* FunctionIdentifier::get_param_at(int index) {  // 获取第index+1个参数指针
+		// 原代码返回的是对象，需要返回对象的指针，因此取地址
+		return &m_params_list[index];
 	}
 	bool FunctionIdentifier::is_certain_param_reference(std::string param_name) {  // 判指定参数是否为引用类型
 		auto it = m_param_map.find(param_name);
