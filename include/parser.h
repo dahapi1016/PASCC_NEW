@@ -41,12 +41,12 @@ struct TypeInfo {  // 类型(对应文法中的type)
 	pascals::ast::TypeNode* type_node;  // 对应语法树节点
 };
 
-struct PeriodInfo {  // 数组上下界(一维)(对应文法中的period);
+struct PeriodInfo {  // 数组上下界(一维)(对应文法中的period)
 	pascals::ArrayType::ArrayBound* bound;  // 下界&上界
 	pascals::ast::PeriodNode* period_node;  // 对应语法树节点
 };
 
-struct PeriodsInfo {  // 数组上下界(多维)(对应文法中的periods);
+struct PeriodsInfo {  // 数组上下界(多维)(对应文法中的periods)
 	std::vector<pascals::ArrayType::ArrayBound>* bounds;  // 多个下界&上界
 	pascals::ast::PeriodsNode* periods_node;  // 对应语法树节点
 };
@@ -54,93 +54,92 @@ struct PeriodsInfo {  // 数组上下界(多维)(对应文法中的periods);
 struct FormalParameterInfo {  // 函数/过程参数(对应文法中的formal_parameter)
 	std::vector<pascals::FunctionIdentifier::Parameter>* parameters;  // 参数列表
 	pascals::ast::FormalParameterNode* formal_parameter_node;  // 对应语法树节点
-	std::unordered_map<std::string, std::pair<int, int>>* pos_info;
+	std::unordered_map<std::string, std::pair<int, int>>* pos_info;  // 位置信息
 };
 
 struct ParameterListInfo {  // 一个参数列表(对应文法中的parameter_list)
 	std::vector<pascals::FunctionIdentifier::Parameter>* parameters;  // 参数列表
 	pascals::ast::ParameterListNode* parameter_list_node;  // 对应语法树节点
-	std::unordered_map<std::string, std::pair<int, int>>* pos_info;
+	std::unordered_map<std::string, std::pair<int, int>>* pos_info;  // 位置信息
 };
 
 struct ParameterListsInfo {  // 多个参数列表(对应文法中的parameter_lists)
 	std::vector<pascals::FunctionIdentifier::Parameter>* parameters;  // 参数列表
 	pascals::ast::ParameterListsNode* parameter_lists_node;  // 对应语法树节点
-	std::unordered_map<std::string, std::pair<int, int>>* pos_info;
+	std::unordered_map<std::string, std::pair<int, int>>* pos_info;  // 位置信息
 };
 
-struct VarDeclarationInfo {
-	std::unordered_map<std::string, pascals::TypeTemplate*>* record_info;
-	pascals::ast::VarDeclarationNode* variable_declaration_node;
-	std::unordered_map<std::string, std::pair<int, int>>* pos_info;
+struct VarDeclarationInfo {  // 对应文法中var_declaration
+	std::unordered_map<std::string, pascals::TypeTemplate*>* record_info;  // 记录信息
+	pascals::ast::VarDeclarationNode* variable_declaration_node;  // 对应语法树节点
+	std::unordered_map<std::string, std::pair<int, int>>* pos_info;  // 位置信息
 };
 
 struct VarParameterInfo {  // 参数列表(引用传递)(对应文法中的var_parameter)
 	std::vector<pascals::FunctionIdentifier::Parameter>* parameters;  // 参数列表
 	pascals::ast::VarParameterNode* var_parameter_node;  // 对应语法树节点
-	std::unordered_map<std::string, std::pair<int, int>>* pos_info;
+	std::unordered_map<std::string, std::pair<int, int>>* pos_info;  // 位置信息
 };
 
 struct ValueParameterInfo {  // 参数列表(值传递)(对应文法中的value_parameter)
 	std::vector<pascals::FunctionIdentifier::Parameter>* parameters;  // 参数列表
 	pascals::ast::ValueParameterNode* value_parameter_node;  // 对应语法树节点
-	std::unordered_map<std::string, std::pair<int, int>>* pos_info;
+	std::unordered_map<std::string, std::pair<int, int>>* pos_info;  // 位置信息
 };
 
 struct VariableInfo {  // read函数的一个参数(对应文法中的variable)
 	pascals::TypeTemplate* type;  // 类型
 	std::string* name;  // 名
 	pascals::ast::VariableNode* variable_node;  // 对应语法树节点
-	bool is_lvalue;
+	bool is_lvalue;  // 是否是左值
 };
 
 struct VariableListInfo {  // read函数的参数列表(对应文法中的variable_list) 
-    std::vector<pascals::TypeTemplate*>* type_list;  // 修改为普通指针
-    pascals::ast::VariableListNode* variable_list_node;  // 修改为普通指针
+    std::vector<pascals::TypeTemplate*>* type_list;  // 类型列表
+    pascals::ast::VariableListNode* variable_list_node;  // 对应语法树节点
 };
 
 struct ExpressionInfo {  // 表达式(对应文法中的expression) 
-    pascals::TypeTemplate* type;  // 修改为普通指针
-    pascals::ast::ExpressionNode* expression_node;  // 修改为普通指针
-    bool is_lvalue;
+    pascals::TypeTemplate* type;  // 类型
+    pascals::ast::ExpressionNode* expression_node;  // 对应语法树节点
+    bool is_lvalue;  // 是否是左值
 };
 
 struct SimpleExpressionInfo {  // 简单表达式(对应文法中的simple_expression)
-    pascals::TypeTemplate* type;  // 修改为普通指针
-    pascals::ast::SimpleExpressionNode* simple_expression_node;  // 修改为普通指针
-    bool is_lvalue;
+    pascals::TypeTemplate* type;  // 类型
+    pascals::ast::SimpleExpressionNode* simple_expression_node;  // 对应语法树节点
+    bool is_lvalue;  // 是否是左值
 };
 
 struct TermInfo {  // (对应文法中的term)
-    pascals::TypeTemplate* type;  // 修改为普通指针
-    pascals::ast::TermNode* term_node;  // 修改为普通指针
-    bool is_lvalue;
+    pascals::TypeTemplate* type;  // 类型
+    pascals::ast::TermNode* term_node;  // 对应语法树节点
+    bool is_lvalue;  // 是否是左值
 };
 
 struct FactorInfo {  // (对应文法中的factor)
-    pascals::TypeTemplate* type;  // 修改为普通指针
-    pascals::ast::FactorNode* factor_node;  // 修改为普通指针
-    bool is_lvalue;
+    pascals::TypeTemplate* type;  // 类型
+    pascals::ast::FactorNode* factor_node;  // 对应语法树节点
+    bool is_lvalue;  // 是否是左值
 };
 
 
-struct VarParts {
-	bool flag;
-	std::vector<pascals::TypeTemplate*>* subscript;
-	std::string name;
+struct VarParts {  // 变量部分
+	bool flag;  // 标志位
+	std::vector<pascals::TypeTemplate*>* subscript;  // 下标数组
+	std::string name;  // 名称
 };
 
 struct IdVarpartInfo {  // (对应文法中的id_varpart)
-    VarParts* var_part;
-    pascals::ast::IDVarPartNode* id_varpart_node;  // 修改为普通指针
+    VarParts* var_part;  // 变量部分
+    pascals::ast::IDVarPartNode* id_varpart_node;  // 对应语法树节点
 };
 
 
-
 struct ExpressionListInfo {  // (对应文法中的expression_list)  
-    std::vector<pascals::TypeTemplate*>* type_list;  // 修改为普通指针
-    pascals::ast::ExpressionListNode* expression_list_node;  // 修改为普通指针
-    std::vector<bool>* is_lvalue_list;
+    std::vector<pascals::TypeTemplate*>* type_list;  // 类型列表
+    pascals::ast::ExpressionListNode* expression_list_node;  // 对应语法树节点
+    std::vector<bool>* is_lvalue_list;  // 左值标记列表
 };
 
 
@@ -170,7 +169,7 @@ struct YYSTYPE {  // Bison .y文件中YYSTYPE的定义 这里定义了，.y文�
 		IdVarpartInfo id_varpart_node_info;
 		ExpressionListInfo expression_list_node_info;
 
-		pascals::ast::ProgramNode * program_node;
+		pascals::ast::ProgramNode * program_node;  // 程序节点
 		pascals::ast::ProgramHeadNode * program_head_node;  // 对应文法中program_head
 		pascals::ast::ProgramBodyNode * program_body_node;  // 对应文法中program_body
 		pascals::ast::ConstDeclarationsNode * const_declarations_node;  // 对应文法中const_declarations
