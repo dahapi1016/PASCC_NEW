@@ -142,7 +142,7 @@ struct ExpressionListInfo {  // (对应文法中的expression_list)
 
 
 #if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
-typedef struct {  // Bison .y文件中YYSTYPE的定义 这里定义了，.y文件中就无需再次定义
+struct YYSTYPE {  // Bison .y文件中YYSTYPE的定义 这里定义了，.y文件中就无需再次定义
 	Token token_info;
 	ValueInfo value_node_info;
 	union {
@@ -184,7 +184,10 @@ typedef struct {  // Bison .y文件中YYSTYPE的定义 这里定义了，.y文�
 		std::shared_ptr<pascals::ast::ElsePartNode> else_node;  // 对应文法中else_part
 		std::shared_ptr<pascals::ast::ProcedureCallNode> procedure_call_node;  // 对应文法中procedure_call
 	};
-} YYSTYPE;
+	YYSTYPE() = default;
+    ~YYSTYPE() = default;
+};
+typedef struct YYSTYPE YYSTYPE;
 #define YYSTYPE_IS_TRIVIAL 1
 #define YYSTYPE_IS_DECLARED 1
 #endif

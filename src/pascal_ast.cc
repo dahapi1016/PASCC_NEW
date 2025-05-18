@@ -132,7 +132,7 @@ void VarDeclarationNode::Format(FILE *dst) {
   }
   // analyze current layer
   size_t last = child_list_.size() - 1;
-  Node *tnode = child_list_[last];
+  std::shared_ptr<pascals::ast::Node> tnode = child_list_[last];
   vector<LeafNode *> idlist =
       child_list_[last - 1]->DynamicCast<IdListNode>()->Lists();
 
