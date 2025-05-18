@@ -3,7 +3,7 @@
 namespace pascals {
 	// Identifier
 	Identifier::Identifier() {}
-	Identifier::Identifier(std::string name, std::shared_ptr<TypeTemplate> value_type, bool is_reference, int declare_line) :
+	Identifier::Identifier(std::string name, TypeTemplate* value_type, bool is_reference, int declare_line) :
 		m_name(name), m_value_type(value_type), m_is_reference(is_reference), m_declare_line(declare_line) {
 		m_identifier_type = IDENTIFIER_TYPE::VAR;
 	}
@@ -12,7 +12,7 @@ namespace pascals {
 	std::string Identifier::get_name() { 
 		return m_name; 
 	}
-	std::shared_ptr<TypeTemplate> Identifier::get_value_type() { 
+	TypeTemplate* Identifier::get_value_type() {
 		return m_value_type; 
 	}
 	Identifier::IDENTIFIER_TYPE Identifier::get_identifier_type() { 
@@ -56,14 +56,14 @@ namespace pascals {
 			m_param_map[it->first] = it->second;
 		}
 	}
-	FunctionIdentifier::FunctionIdentifier(std::string name, std::shared_ptr<BasicType> return_type, int declare_line, const std::vector<Parameter>& params_list) :
+	FunctionIdentifier::FunctionIdentifier(std::string name, BasicType* return_type, int declare_line, const std::vector<Parameter>& params_list) :
 		Identifier(name, return_type, declare_line), m_params_list(params_list) {
 		m_identifier_type = IDENTIFIER_TYPE::FUNCTION;
 		for (int i = 0; i < params_list.size(); i++) {
 			m_param_map[params_list[i].param_name] = i;
 		}
 	}
-	FunctionIdentifier::FunctionIdentifier(std::string name, std::shared_ptr<BasicType> return_type, int declare_line) :
+	FunctionIdentifier::FunctionIdentifier(std::string name, BasicType* return_type, int declare_line) :
 		Identifier(name, return_type, declare_line) {
 		m_identifier_type = IDENTIFIER_TYPE::FUNCTION;
 	}
@@ -98,7 +98,7 @@ namespace pascals {
 			return false;
 		}
 	}
-	std::shared_ptr<TypeTemplate> FunctionIdentifier::get_param_type_by_name(std::string name) {  // 根据参数名获取其类型
+	TypeTemplate* FunctionIdentifier::get_param_type_by_name(std::string name) {  // 根据参数名获取其类型
 		auto ptr = m_param_map.find(name);
 		return m_params_list[ptr->second].param_type;
 	}

@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 
 	
 	pascals::ast::AST ast;  // 创建语法树
-	// yyparse(&ast);  // 调用Bison语法分析接口，生成ast
+	//yyparse(&ast);  // 调用Bison语法分析接口，生成ast
 	ast.Format(output_file);  // ast格式化输出到.c文件
 
 	std::fclose(yyin);  // 关闭.pas文件

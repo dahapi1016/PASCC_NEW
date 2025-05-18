@@ -20,17 +20,17 @@ namespace pascals {
  */
         class Node { 
         protected:
-        std::shared_ptr<pascals::ast::Node> parent_;
-            std::vector<std::shared_ptr<pascals::ast::Node>> child_list_;
+        Node* parent_;
+        std::vector<Node*> child_list_;
 
         public:
             // constructor and virtual destructor
             Node() : parent_(nullptr) {};
-            // virtual ~Node() {
-            //     for (auto child : child_list_) {
-            //         delete child;
-            //     }
-            // };
+            virtual ~Node() {
+                for (auto child : child_list_) {
+                    delete child;
+                }
+            };
 
             // type cast
             template <typename T>
@@ -43,10 +43,10 @@ namespace pascals {
             }
 
             // getter and setter
-            void set_parent(std::shared_ptr<pascals::ast::Node> parent) { parent_ = parent; }
-            std::shared_ptr<pascals::ast::Node> parent() { return parent_; }
-            void append_child(std::shared_ptr<pascals::ast::Node> child) { child_list_.emplace_back(child); }
-            std::shared_ptr<pascals::ast::Node> get(int pos) {
+            void set_parent(Node* parent) { parent_ = parent; }
+            Node* parent() { return parent_; }
+            void append_child(Node* child) { child_list_.emplace_back(child); }
+            Node* get(int pos) {
                 return child_list_[pos < 0 ? pos += child_list_.size() : pos];
             }
 
@@ -72,7 +72,7 @@ namespace pascals {
         class AST {
         private:
             bool valid_ = false;
-            std::shared_ptr<pascals::ast::Node> root_ = nullptr;
+            Node* root_ = nullptr;
    
 
         public:
@@ -82,8 +82,8 @@ namespace pascals {
             bool Valid() { return valid_ && root_ != nullptr; }
             void set_valid(bool v) { valid_ = v; }
             // getter and setter
-            std::shared_ptr<pascals::ast::Node> root() { return root_; }
-            void set_root(std::shared_ptr<pascals::ast::Node> root) { root_ = root; }
+            Node* root() { return root_; }
+            void set_root(Node* root) { root_ = root; }
             // static formater
             void Format(FILE * dst);
         };
@@ -113,7 +113,7 @@ namespace pascals {
             T value() {
                 return value_.get<T>();
             }
-            std::shared_ptr<BasicType> type() { return value_.get_type(); }
+            BasicType* type() { return value_.get_type(); }
 
             // Analyze reference
             bool AnalyzeReference(SymbolTable* ts, FunctionIdentifier* fn);
@@ -178,7 +178,7 @@ namespace pascals {
 
         private:
             GrammarType grammar_type_;
-            std::shared_ptr<BasicType> type_;
+            BasicType* type_;
         };
 
         class ConstValueNode : public Node {
@@ -378,7 +378,7 @@ namespace pascals {
             bool set_types(std::vector<TypeTemplate*>* type_list);
 
         private:
-            std::vector<std::shared_ptr<BasicType>> basic_types;
+            std::vector<BasicType*> basic_types;
             GrammarType grammar_type_;
         };
 
@@ -450,7 +450,7 @@ namespace pascals {
             void set_ref(std::stack<bool>* ref);
 
         private:
-            std::vector<std::shared_ptr<pascals::BasicType>> basic_types;
+            std::vector<BasicType*> basic_types;
             GrammarType grammar_type_;
         };
 

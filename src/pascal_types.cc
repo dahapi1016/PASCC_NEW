@@ -10,42 +10,27 @@ namespace pascals {
 		return m_type;
 	}
 
-	bool TypeTemplate::is_basic_type(std::shared_ptr<TypeTemplate> type) {  // 判type是否为基础类型
-		if (type == nullptr) {
-			return false;
-		}
-		if (type->get_type() != TypeTemplate::TYPE::BASIC) {
-			return false;
-		}
-		auto basic_type = std::dynamic_pointer_cast<BasicType>(type);
+	bool TypeTemplate::is_basic_type(TypeTemplate* type) {  // 判type是否为基础类型
+		if (!type) return false;
+		if (type->get_type() != TYPE::BASIC) return false;
+		auto* basic_type = dynamic_cast<BasicType*>(type);
 		return basic_type == TYPE_INTEGER || basic_type == TYPE_REAL || basic_type == TYPE_BOOLEAN || basic_type == TYPE_CHAR;
 	}
 
-	bool TypeTemplate::is_same(std::shared_ptr<TypeTemplate> type1, std::shared_ptr<TypeTemplate> type2) {  // 判type1和type2是否相等
-		if (type1 == type2) {
-			return true;
+	bool TypeTemplate::is_same(TypeTemplate* type1, TypeTemplate* type2) {  // 判type1和type2是否相等
+		if (!type1 || !type2) return false;
+		if (type1 == type2) return true;
+		if (type1->get_type() != type2->get_type()) return false;
+
+		if (type1->get_type() == TYPE::ARRAY) {
+			auto* a1 = dynamic_cast<ArrayType*>(type1);
+			auto* a2 = dynamic_cast<ArrayType*>(type2);
+			return a1 && a2 && (*a1 == *a2);
 		}
-		if (type1 == nullptr || type2 == nullptr) {
-			return false;
-		}
-		if (type1->get_type() != type2->get_type()) {
-			return false;
-		}
-		if (type1->get_type() == TypeTemplate::TYPE::ARRAY) {
-			auto a1 = std::dynamic_pointer_cast<ArrayType>(type1);
-			auto a2 = std::dynamic_pointer_cast<ArrayType>(type2);
-			if (!a1 || !a2) {  // 检查类型转换是否成功
-				return false;
-			}
-			return (*a1) == (*a2);
-		}
-		else if (type1->get_type() == TypeTemplate::TYPE::BASIC) {
-			auto b1 = std::dynamic_pointer_cast<BasicType>(type1);
-			auto b2 = std::dynamic_pointer_cast<BasicType>(type2);
-			if (!b1 || !b2) {  // 检查类型转换是否成功
-				return false;
-			}
-			return b1->get_basic_type() == b2->get_basic_type();
+		else if (type1->get_type() == TYPE::BASIC) {
+			auto* b1 = dynamic_cast<BasicType*>(type1);
+			auto* b2 = dynamic_cast<BasicType*>(type2);
+			return b1 && b2 && (b1->get_basic_type() == b2->get_basic_type());
 		}
 		return false;
 	}
@@ -89,29 +74,18 @@ namespace pascals {
 		return m_basic_type;
 	}
 
-	std::shared_ptr<BasicType> BasicType::get_computed_type(std::shared_ptr<BasicType> operand1_type, std::shared_ptr<BasicType> operand2_type, std::string op) {
-		if (operand1_type == nullptr || operand2_type == nullptr) {
-			return TYPE_NONE;
-		}
+	BasicType* BasicType::get_computed_type(BasicType* operand1_type, BasicType* operand2_type, std::string op) {
+		if (!operand1_type || !operand2_type) return TYPE_NONE;
 		auto res = g_operation_map.find(Operation(operand1_type, operand2_type, op));
-		if (res != g_operation_map.end()) {
-			return (*res).second;
-		}
-		else {
-			return TYPE_NONE;
-		}
+		return res != g_operation_map.end() ? res->second : TYPE_NONE;
 	}
 
-	std::shared_ptr<BasicType> BasicType::get_computed_type(std::shared_ptr<BasicType> operand_type, std::string op) {
-		if (operand_type == nullptr) return TYPE_NONE;
+	BasicType* BasicType::get_computed_type(BasicType* operand_type, std::string op) {
+		if (!operand_type) return TYPE_NONE;
 		auto res = g_operation_map.find(Operation(operand_type, nullptr, op));
-		if (res != g_operation_map.end()) {
-			return (*res).second;
-		}
-		else {
-			return TYPE_NONE;
-		}
+		return res != g_operation_map.end() ? res->second : TYPE_NONE;
 	}
+
 
 	// ArrayType
 	ArrayType::ArrayBound::ArrayBound() : lower_bound(0), upper_bound(0) {}  // ArrayBound无参构造
@@ -127,9 +101,9 @@ namespace pascals {
 	}
 
 	ArrayType::ArrayType() : TypeTemplate(TYPE::ARRAY), m_element_type(TYPE_NONE) {}  // ArrayType无参构造
-	ArrayType::ArrayType(std::shared_ptr<BasicType> element_type) : TypeTemplate(TYPE::ARRAY), m_element_type(element_type) {}  // 一个参数(元素类型)构造
-	ArrayType::ArrayType(std::shared_ptr<BasicType> element_type, std::vector<ArrayBound> bounds) :  // 两个参数(元素类型、数组上下界)构造
-		TypeTemplate(TYPE::ARRAY), m_element_type(element_type), m_bounds(std::move(bounds)) {
+	ArrayType::ArrayType(BasicType* element_type) : TypeTemplate(TYPE::ARRAY), m_element_type(element_type) {}  // 一个参数(元素类型)构造
+	ArrayType::ArrayType(BasicType* element_type, std::vector<ArrayBound> bounds)  // 两个参数(元素类型、数组上下界)构造
+		: TypeTemplate(TYPE::ARRAY), m_element_type(element_type), m_bounds(std::move(bounds)) {
 	}
 	ArrayType::ArrayType(const ArrayType& other) {  // ArrayType深拷贝构造
 		m_element_type = other.m_element_type;
@@ -181,7 +155,7 @@ namespace pascals {
 		return res;
 	}
 
-	std::shared_ptr<BasicType> ArrayType::get_element_type() {  // 获取数组元素类型
+	BasicType* ArrayType::get_element_type() {  // 获取数组元素类型
 		return m_element_type;
 	}
 
@@ -296,12 +270,12 @@ namespace pascals {
 			throw std::runtime_error("常量类型(boolean)不支持取相反数");
 	}
 
-	std::shared_ptr<BasicType> ConstValue::get_type() {  // 获取常量对应的类型
+	BasicType* ConstValue::get_type() {  // 获取常量对应的类型
 		return m_const_type;
 	}
 
 	// Operation
-	Operation::Operation(std::shared_ptr<BasicType> operand1_type, std::shared_ptr<BasicType> operand2_type, const std::string& op) :
+	Operation::Operation(BasicType* operand1_type, BasicType* operand2_type, const std::string& op) :
 		m_operand1_type(operand1_type), m_operand2_type(operand2_type), m_op(op) {
 	}
 	Operation::~Operation() {}
@@ -311,22 +285,22 @@ namespace pascals {
 	}
 
 	// 全局变量
-	std::shared_ptr<BasicType> TYPE_INTEGER;
-	std::shared_ptr<BasicType> TYPE_REAL;
-	std::shared_ptr<BasicType> TYPE_BOOLEAN;
-	std::shared_ptr<BasicType> TYPE_CHAR;
-	std::shared_ptr<BasicType> TYPE_STRING;
-	std::shared_ptr<BasicType> TYPE_NONE;
+	BasicType* TYPE_INTEGER;
+	BasicType* TYPE_REAL;
+	BasicType* TYPE_BOOLEAN;
+	BasicType* TYPE_CHAR;
+	BasicType* TYPE_STRING;
+	BasicType* TYPE_NONE;
 	// std::shared_ptr<std::vector<std::shared_ptr<TypeTemplate>>> g_ptr_collector;
-	std::unordered_map<Operation, std::shared_ptr<BasicType>, OperationHash> g_operation_map;
+	std::unordered_map<Operation, BasicType*, OperationHash> g_operation_map;
 
 	void pascal_types_init() {  // 全局变量初始化
-		TYPE_INTEGER = std::make_shared<BasicType>(BasicType::BASIC_TYPE::INTEGER);
-		TYPE_REAL = std::make_shared<BasicType>(BasicType::BASIC_TYPE::REAL);
-		TYPE_BOOLEAN = std::make_shared<BasicType>(BasicType::BASIC_TYPE::BOOLEAN);
-		TYPE_CHAR = std::make_shared<BasicType>(BasicType::BASIC_TYPE::CHAR);
-		TYPE_STRING = std::make_shared<BasicType>(BasicType::BASIC_TYPE::STRING);
-		TYPE_NONE = std::make_shared<BasicType>(BasicType::BASIC_TYPE::NONE);
+		TYPE_INTEGER = new BasicType(BasicType::BASIC_TYPE::INTEGER);
+		TYPE_REAL = new BasicType(BasicType::BASIC_TYPE::REAL);
+		TYPE_BOOLEAN = new BasicType(BasicType::BASIC_TYPE::BOOLEAN);
+		TYPE_CHAR = new BasicType(BasicType::BASIC_TYPE::CHAR);
+		TYPE_STRING = new BasicType(BasicType::BASIC_TYPE::STRING);
+		TYPE_NONE = new BasicType(BasicType::BASIC_TYPE::NONE);
 		// g_ptr_collector = std::make_shared<std::vector<std::shared_ptr<TypeTemplate>>>();
 
 		// int

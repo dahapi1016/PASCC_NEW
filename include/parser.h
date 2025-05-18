@@ -1,6 +1,5 @@
 // 用于.l和.y文件的数据结构
 #pragma once
-
 #include <stack>
 #include <algorithm>
 #include "pascal_types.h"
@@ -95,34 +94,33 @@ struct VariableInfo {  // read函数的一个参数(对应文法中的variable)
 };
 
 struct VariableListInfo {  // read函数的参数列表(对应文法中的variable_list) 
-    std::vector<pascals::TypeTemplate*>* type_list;  // 类型列表
-    pascals::ast::VariableListNode* variable_list_node;  // 对应语法树节点
+	std::vector<pascals::TypeTemplate*>* type_list;  // 类型列表
+	pascals::ast::VariableListNode* variable_list_node;  // 对应语法树节点
 };
 
 struct ExpressionInfo {  // 表达式(对应文法中的expression) 
-    pascals::TypeTemplate* type;  // 类型
-    pascals::ast::ExpressionNode* expression_node;  // 对应语法树节点
-    bool is_lvalue;  // 是否是左值
+	pascals::TypeTemplate* type;  // 类型
+	pascals::ast::ExpressionNode* expression_node;  // 对应语法树节点
+	bool is_lvalue;  // 是否是左值
 };
 
 struct SimpleExpressionInfo {  // 简单表达式(对应文法中的simple_expression)
-    pascals::TypeTemplate* type;  // 类型
-    pascals::ast::SimpleExpressionNode* simple_expression_node;  // 对应语法树节点
-    bool is_lvalue;  // 是否是左值
+	pascals::TypeTemplate* type;  // 类型
+	pascals::ast::SimpleExpressionNode* simple_expression_node;  // 对应语法树节点
+	bool is_lvalue;  // 是否是左值
 };
 
 struct TermInfo {  // (对应文法中的term)
-    pascals::TypeTemplate* type;  // 类型
-    pascals::ast::TermNode* term_node;  // 对应语法树节点
-    bool is_lvalue;  // 是否是左值
+	pascals::TypeTemplate* type;  // 类型
+	pascals::ast::TermNode* term_node;  // 对应语法树节点
+	bool is_lvalue;  // 是否是左值
 };
 
 struct FactorInfo {  // (对应文法中的factor)
-    pascals::TypeTemplate* type;  // 类型
-    pascals::ast::FactorNode* factor_node;  // 对应语法树节点
-    bool is_lvalue;  // 是否是左值
+	pascals::TypeTemplate* type;  // 类型
+	pascals::ast::FactorNode* factor_node;  // 对应语法树节点
+	bool is_lvalue;  // 是否是左值
 };
-
 
 struct VarParts {  // 变量部分
 	bool flag;  // 标志位
@@ -131,15 +129,14 @@ struct VarParts {  // 变量部分
 };
 
 struct IdVarpartInfo {  // (对应文法中的id_varpart)
-    VarParts* var_part;  // 变量部分
-    pascals::ast::IDVarPartNode* id_varpart_node;  // 对应语法树节点
+	VarParts* var_part;  // 变量部分
+	pascals::ast::IDVarPartNode* id_varpart_node;  // 对应语法树节点
 };
 
-
 struct ExpressionListInfo {  // (对应文法中的expression_list)  
-    std::vector<pascals::TypeTemplate*>* type_list;  // 类型列表
-    pascals::ast::ExpressionListNode* expression_list_node;  // 对应语法树节点
-    std::vector<bool>* is_lvalue_list;  // 左值标记列表
+	std::vector<pascals::TypeTemplate*>* type_list;  // 类型列表
+	pascals::ast::ExpressionListNode* expression_list_node;  // 对应语法树节点
+	std::vector<bool>* is_lvalue_list;  // 左值标记列表
 };
 
 
@@ -159,7 +156,7 @@ struct YYSTYPE {  // Bison .y文件中YYSTYPE的定义 这里定义了，.y文�
 		VarParameterInfo var_parameter_node_info;
 		ValueParameterInfo value_parameter_node_info;
 
-		VarDeclarationInfo var_declaration_node_info;// 对应文法中var_declaration
+		VarDeclarationInfo var_declaration_node_info;
 		VariableInfo variable_node_info;
 		VariableListInfo variable_list_node_info;
 		ExpressionInfo expression_node_info;
@@ -169,22 +166,22 @@ struct YYSTYPE {  // Bison .y文件中YYSTYPE的定义 这里定义了，.y文�
 		IdVarpartInfo id_varpart_node_info;
 		ExpressionListInfo expression_list_node_info;
 
-		pascals::ast::ProgramNode * program_node;  // 程序节点
-		pascals::ast::ProgramHeadNode * program_head_node;  // 对应文法中program_head
-		pascals::ast::ProgramBodyNode * program_body_node;  // 对应文法中program_body
-		pascals::ast::ConstDeclarationsNode * const_declarations_node;  // 对应文法中const_declarations
-		pascals::ast::ConstDeclarationNode * const_declaration_node;  // 对应文法中const_declaration
-		pascals::ast::BasicTypeNode * basic_type_node;  // 对应文法中basic_type  
-		pascals::ast::VarDeclarationsNode * var_declarations_node;  // 对应文法中var_declarations
-		pascals::ast::SubprogramDeclarationsNode * subprogram_declarations_node;  // 对应文法中subprogram_declarations
-		pascals::ast::SubprogramNode * subprogram_node;  // 对应文法中subprogram
-		pascals::ast::SubprogramHeadNode * subprogram_head_node;  // 对应文法中subprogram_head
-		pascals::ast::SubprogramBodyNode * subprogram_body_node;  // 对应文法中subprogram_body
-		pascals::ast::CompoundStatementNode * compound_statement_node;  // 对应文法中compound_statement
-		pascals::ast::StatementListNode * statement_list_node;  // 对应文法中statement_list
-		pascals::ast::StatementNode * statement_node;  // 对应文法中statement
-		pascals::ast::ElsePartNode * else_node;  // 对应文法中else_part
-		pascals::ast::ProcedureCallNode * procedure_call_node;  // 对应文法中procedure_call
+		pascals::ast::ProgramNode* program_node;  // 程序节点
+		pascals::ast::ProgramHeadNode* program_head_node;  // 对应文法中program_head
+		pascals::ast::ProgramBodyNode* program_body_node;  // 对应文法中program_body
+		pascals::ast::ConstDeclarationsNode* const_declarations_node;  // 对应文法中const_declarations
+		pascals::ast::ConstDeclarationNode* const_declaration_node;  // 对应文法中const_declaration
+		pascals::ast::BasicTypeNode* basic_type_node;  // 对应文法中basic_type  
+		pascals::ast::VarDeclarationsNode* var_declarations_node;  // 对应文法中var_declarations
+		pascals::ast::SubprogramDeclarationsNode* subprogram_declarations_node;  // 对应文法中subprogram_declarations
+		pascals::ast::SubprogramNode* subprogram_node;  // 对应文法中subprogram
+		pascals::ast::SubprogramHeadNode* subprogram_head_node;  // 对应文法中subprogram_head
+		pascals::ast::SubprogramBodyNode* subprogram_body_node;  // 对应文法中subprogram_body
+		pascals::ast::CompoundStatementNode* compound_statement_node;  // 对应文法中compound_statement
+		pascals::ast::StatementListNode* statement_list_node;  // 对应文法中statement_list
+		pascals::ast::StatementNode* statement_node;  // 对应文法中statement
+		pascals::ast::ElsePartNode* else_node;  // 对应文法中else_part
+		pascals::ast::ProcedureCallNode* procedure_call_node;  // 对应文法中procedure_call
 	};
 };
 typedef struct YYSTYPE YYSTYPE;
